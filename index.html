@@ -193,10 +193,10 @@ a,button,input,select{-webkit-tap-highlight-color:transparent}
   color:var(--text);outline:none;appearance:none;text-align:center;
 }
 /* Species toggle buttons */
-.sp-toggle{display:flex;gap:6px}
+.sp-toggle{display:flex;gap:8px}
 .sp-btn{
-  width:44px;height:44px;border:1.5px solid var(--border);border-radius:12px;
-  background:#fff;cursor:pointer;display:flex;align-items:center;justify-content:center;
+  flex:1;height:44px;border:1.5px solid var(--border);border-radius:12px;
+  background:#fff;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:4px;
   transition:all .18s;padding:0;
   font-family:'Noto Sans TC',sans-serif;font-size:15px;font-weight:500;color:var(--text-light);
 }
@@ -315,6 +315,19 @@ a,button,input,select{-webkit-tap-highlight-color:transparent}
 .adv-icon{margin:0 auto 10px}
 .adv-card h4{font-size:13px;font-weight:500;margin-bottom:8px}
 .adv-card p{font-size:11.5px;line-height:1.7;color:var(--text-light);font-weight:300}
+
+/* ===== Tips Section (5 Tips layout) ===== */
+.tips-card{
+  background:var(--card);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);
+  border:1px solid rgba(229,221,211,.55);border-radius:22px;
+  padding:22px 20px;margin:16px 0;box-shadow:0 6px 28px var(--shadow);
+}
+.tips-cat-hd{font-size:13px;font-weight:500;margin:16px 0 8px;display:flex;align-items:center;gap:6px;color:var(--text)}
+.tips-cat-hd:first-of-type{margin-top:2px}
+.tip-row{display:flex;gap:10px;margin:8px 0;align-items:flex-start}
+.tip-num{width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:600;flex-shrink:0;margin-top:2px;color:#fff}
+.tip-text{font-size:12.5px;line-height:1.8;color:var(--text-light);font-weight:300;flex:1}
+.tip-cat-line{width:100%;height:1px;background:var(--border);margin:14px 0 4px}
 
 /* Tip & CTA */
 .tip-card{
@@ -443,12 +456,11 @@ a,button,input,select{-webkit-tap-highlight-color:transparent}
   </div>
   <div class="pet-section">
     <label>毛孩的名字是？</label>
-    <div class="pet-row">
-      <input type="text" id="pet-name" class="pet-in" placeholder="例：阿財">
-      <div class="sp-toggle">
-        <button type="button" class="sp-btn active" id="sp-dog" onclick="setSp('dog')">狗</button>
-        <button type="button" class="sp-btn" id="sp-cat" onclick="setSp('cat')">貓</button>
-      </div>
+    <input type="text" id="pet-name" class="pet-in" placeholder="例：阿財" style="width:100%;margin-bottom:14px">
+    <label>牠是⋯</label>
+    <div class="sp-toggle" style="margin-top:7px">
+      <button type="button" class="sp-btn active" id="sp-dog" onclick="setSp('dog')"><span class="el-icon" style="width:20px;height:20px" id="icon-dog"></span> 狗狗</button>
+      <button type="button" class="sp-btn" id="sp-cat" onclick="setSp('cat')"><span class="el-icon" style="width:20px;height:20px" id="icon-cat"></span> 貓咪</button>
     </div>
   </div>
   <div class="photo-section">
@@ -530,49 +542,124 @@ const TRAIT_TAGS = {
   '金':['安靜獨立','愛秩序','不太黏人','自律規律','毛髮漂亮'],
   '水':['內斂觀察','謹慎小心','聰明敏銳','喜歡安全感','耐力型']
 };
-const FOOD = {
-  '木':'雞肝或豬肝、綠色蔬菜（菠菜、高麗菜）、胡蘿蔔、少量柑橘類。疏肝理氣、養護筋骨。',
-  '火':'豬心、魚肉、糙米、菠菜、花椰菜、芹菜、蘑菇。養心安神、滋陰降火。',
-  '土':'牛肚、羊肉、雞肉、生薑、地瓜、南瓜。健脾化濕、溫養中焦。',
-  '金':'雞蛋、鴨肉、大麥、豆腐、白米、梨。潤肺養陰、生津止燥。',
-  '水':'豬腰子、雞蛋、鴨肉、地瓜、黑豆。補腎溫陽、強筋健骨。'
+const TIPS = {
+  '木':{
+    food:['多吃綠色蔬菜（菠菜、芹菜、高麗菜）搭配涼性蛋白質如鴨肉，幫肝氣疏通降火','護眼養毛可加少量豬肝（每週1-2次）、枸杞泡軟拌食、胡蘿蔔煮熟更好吸收'],
+    care:['每天安排充足活動量（散步、追球、嗅聞遊戲），避免長期關籠導致情緒壓抑','春天留意眼睛泛紅、皮膚搔癢、舔腳等過敏訊號，有異常及早就醫'],
+    massage:['沿背部中段（肩胛骨後方到腰部）用拇指畫小圓圈，左右各揉1分鐘，放鬆肝膽區域','一隻手固定身體，另一隻手輕拉伸展每隻腳，再揉捏肩膀和大腿的肌肉，幫牠鬆筋骨']
+  },
+  '火':{
+    food:['選鴨肉等涼性蛋白質為主食，搭配蓮子、芹菜、綠豆水，幫身體降火安神','心氣弱時可加豬心切片水煮（每週1-2次）、紅棗去核切碎拌食，補心血安定情緒'],
+    care:['建立穩定日常節奏（固定散步、進食、睡覺時間），避免過度興奮失控','夏天注意防暑降溫，避免正午散步。焦慮嚴重時給安全空間，不要強迫社交'],
+    massage:['頭頂正中（兩耳連線中點）用拇指輕按畫圓2分鐘，幫牠安神定志','前腳腕關節內側的凹陷處，用拇指輕輕持續按壓，每隻腳1分鐘，安定心情']
+  },
+  '土':{
+    food:['山藥、地瓜、南瓜蒸熟拌食是顧脾胃黃金組合，好消化又補氣，小米粥更佳','濕氣重（軟便、痰多）時加薏仁煮軟拌食，搭配白蘿蔔消脹。飲食定時定量最重要'],
+    care:['控制零食量和體重，鮮食至少微溫再餵，不要冰箱直接拿出來給','換季（梅雨季）注意腸胃，觀察便便軟硬和氣味變化，潮濕天可開除濕機'],
+    massage:['手掌在肚子上順時針畫圓揉，再來回搓到微微發熱——天冷或軟便時特別有效','後腳膝蓋外側下方約三指寬處，用手掌包住輕輕搓揉，每隻腳1分鐘，幫身體補氣']
+  },
+  '金':{
+    food:['梨去皮水煮是潤肺首選，搭配白蘿蔔清痰通氣、山藥補肺氣強化防護力','皮毛乾燥加鴨肉滋潤、蛋黃養護，少量蜂蜜潤肺（1歲以下勿用），可拌亞麻籽油'],
+    care:['維持穩定規律的生活節奏，秋冬注意皮膚保濕，避免過度洗澡讓皮脂流失','空氣差或天冷時留意呼吸道，打噴嚏、鼻塞、咳嗽是早期訊號，可適度增加室內濕度'],
+    massage:['從額頭沿鼻樑到鼻翼兩側畫小圓圈，幫鼻子通暢，鼻塞時多做幾次效果明顯','搓熱肩胛骨區域——手掌貼著來回搓直到微微發熱，溫暖肺區，天冷時特別推薦']
+  },
+  '水':{
+    food:['怕冷型選羊肉或雞肉為主食，搭配少量肉桂粉、核桃磨碎拌入，溫補腎氣','偏乾型改選鴨肉＋黑芝麻粉＋枸杞滋潤補腎。山藥是兩型都適合的萬用食材'],
+    care:['提供溫暖安全的休息環境，冬天注意保暖（穿衣、墊暖墊），避免睡冰冷地板','定期觀察後腿力量和關節狀態，維持適度散步保肌肉量，有跛行或起身困難及早就醫'],
+    massage:['後腰（最後肋骨到骨盆之間）用手掌快速來回搓至溫熱——水型最重要的動作','雙手包住後腳踝（內側和外側），像搓湯圓一樣輕輕搓揉，每隻腳1-2分鐘，改善後軀力量']
+  }
 };
-const CARE = {
-  '木':'多提供發洩精力的活動，避免長期被關或情緒壓抑。春天特別注意過敏和眼睛保養。',
-  '火':'規律的安撫與陪伴，避免過度興奮。夏天注意防暑，關注心臟健康。',
-  '土':'飲食定時定量，避免潮濕環境。換季時注意腸胃，控制體重。',
-  '金':'維持穩定的生活規律，秋冬注意皮膚保濕和呼吸道保養。',
-  '水':'提供安全溫暖的環境，冬天注意保暖。定期關注腰背與關節。'
+const MIX_MASSAGE = {
+  '木火':['慢撫額頭到耳朵安撫3分鐘，再沿背部從肩胛間到中段畫圓揉開——先冷靜再放鬆','四肢輕柔伸展，揉捏肩膀和大腿肌肉。這型開場安撫不能省，耐心是關鍵'],
+  '木土':['肚子順時針畫圓揉再搓熱（暖胃），背部中段拇指畫圓（疏肝）','後腳膝蓋外側下方搓揉補氣——打破壓力→軟便的惡性循環'],
+  '木金':['鼻翼兩側畫圓通鼻，再搓熱肩胛骨區域暖肺','四肢伸展拉筋，揉捏肩臀肌肉——幫牠把悶在身體裡的壓力打開'],
+  '木水':['搓熱後腰（最後肋骨到骨盆）至微溫——暖腎是根基','四肢輕柔伸展搭配後腳踝搓揉，筋骨和腎氣一起顧'],
+  '火土':['肚子順時針畫圓搓熱暖胃，頭頂正中輕按畫圓安神','前腳腕內側輕按各1分鐘安心——最好帶的組合，做一半可能就睡著了'],
+  '火金':['搓熱肩胛骨區域通肺（心肺同區），前腳腕內側輕按安心','頭頂正中輕按畫圓2分鐘——焦慮引發的喘，先安心再通肺'],
+  '火水':['前腳腕內側輕按安心，搓熱後腰暖腎——讓上下連通','後腳掌心正中央輕按各1分鐘，搭配頭頂輕按，平衡心火腎水'],
+  '土金':['搓熱肚子暖胃，搭配鼻翼兩側畫圓通鼻——「培土生金」','後腳膝蓋外側搓揉補氣，前腳外側輕按順肺氣。痰多先顧腸胃'],
+  '土水':['搓熱肚子＋搓熱後腰，全身搓暖是關鍵','後腳先揉膝蓋外側（補氣）再搓腳踝（補腎）——老年毛孩最推薦的組合'],
+  '金水':['搓熱肩胛（通肺）＋搓熱後腰（暖腎），上下都要搓暖','後腳踝雙手包住輕搓，前腳外側輕按——最怕冷的組合，溫暖是核心']
 };
+// Normalize reversed mix keys
+['火木','土木','金木','水木','土火','金火','水火','金土','水土','水金'].forEach(k=>{
+  const rev=k[1]+k[0]; if(MIX_MASSAGE[rev]) MIX_MASSAGE[k]=MIX_MASSAGE[rev];
+});
+function getTips(r){
+  const pe=ELEMENTS[r.pi];
+  if(!r.mix||r.si===null) return TIPS[pe];
+  const se=ELEMENTS[r.si], mk=pe+se;
+  return {food:[TIPS[pe].food[0],TIPS[se].food[0]], care:[TIPS[pe].care[0],TIPS[se].care[0]], massage:MIX_MASSAGE[mk]||TIPS[pe].massage};
+}
 const SEASON = {'木':'春天','火':'夏天','土':'換季（尤其長夏梅雨季）','金':'秋天','水':'冬天'};
 
-// Advice card SVG icons — clear, recognizable
-const ICON_FOOD = `<svg width="40" height="40" viewBox="0 0 40 40" fill="none">
-  <!-- Food bowl -->
-  <path d="M8 22c0 0 2 8 12 8s12-8 12-8" stroke="var(--earth)" stroke-width="1.8" fill="var(--earth)" opacity=".12" stroke-linecap="round"/>
-  <ellipse cx="20" cy="22" rx="13" ry="4" fill="var(--earth-soft)" stroke="var(--earth)" stroke-width="1.2"/>
-  <!-- Food mound -->
-  <path d="M11 22c1-3 4-6 9-6s8 3 9 6" fill="var(--earth)" opacity=".2"/>
-  <!-- Steam lines -->
-  <path d="M14 13c0-2 1.5-3 0-5" stroke="var(--earth)" stroke-width="1" stroke-linecap="round" opacity=".35"/>
-  <path d="M20 11c0-2 1.5-3 0-5" stroke="var(--earth)" stroke-width="1" stroke-linecap="round" opacity=".35"/>
-  <path d="M26 13c0-2 1.5-3 0-5" stroke="var(--earth)" stroke-width="1" stroke-linecap="round" opacity=".35"/>
-  <!-- Leaf garnish -->
-  <path d="M24 17c2-1 4-1 4 1s-2 2-4 1z" fill="var(--wood)" opacity=".4"/>
+// ===== SVG ICON SYSTEM — all hand-drawn watercolor style =====
+
+// Pet species icons (watercolor style, no emoji)
+const ICON_DOG = `<svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+  <path d="M4 7c0-1 .5-3 2-3s1.5 2 2 3c.5-2 3-2 4-2s3.5 0 4 2c.5-1 0-3 2-3s2 2 2 3c0 2-1 4-3 5l.5 3c0 1-.5 2-2 2H5c-1.5 0-2-1-2-2l.5-3C1.5 11 1 9 4 7z" fill="var(--text-muted)" opacity=".18" stroke="var(--text-muted)" stroke-width=".8"/>
+  <circle cx="7.5" cy="9" r="1" fill="var(--text)" opacity=".4"/>
+  <circle cx="12.5" cy="9" r="1" fill="var(--text)" opacity=".4"/>
+  <ellipse cx="10" cy="11.5" rx="1.5" ry="1" fill="var(--text)" opacity=".25"/>
 </svg>`;
-const ICON_CARE = `<svg width="40" height="40" viewBox="0 0 40 40" fill="none">
-  <!-- Heart (care/love) -->
-  <path d="M20 32c-12-8-16-14-12-20 2-3 5-4 8-2l4 4 4-4c3-2 6-1 8 2 4 6 0 12-12 20z" fill="var(--fire)" opacity=".15" stroke="var(--fire)" stroke-width="1.2"/>
-  <!-- Plus sign (medical) -->
-  <rect x="17" y="14" width="6" height="14" rx="1.5" fill="var(--fire)" opacity=".3"/>
-  <rect x="13" y="18" width="14" height="6" rx="1.5" fill="var(--fire)" opacity=".3"/>
+const ICON_CAT = `<svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+  <path d="M4 16V8l2-5 2 3h4l2-3 2 5v8c0 1-1 2-3 2H7c-2 0-3-1-3-2z" fill="var(--text-muted)" opacity=".18" stroke="var(--text-muted)" stroke-width=".8"/>
+  <circle cx="7.5" cy="10" r="1" fill="var(--text)" opacity=".4"/>
+  <circle cx="12.5" cy="10" r="1" fill="var(--text)" opacity=".4"/>
+  <path d="M9 12.5c.5.5 1.5.5 2 0" stroke="var(--text)" stroke-width=".7" fill="none" opacity=".35"/>
+  <path d="M7 13c-2 .5-3.5 0-4-.5M13 13c2 .5 3.5 0 4-.5" stroke="var(--text-muted)" stroke-width=".5" opacity=".25"/>
 </svg>`;
+// Large pet fallback avatars for result page (no emoji)
+const ICON_DOG_LG = `<svg width="40" height="40" viewBox="0 0 40 40" fill="none">
+  <path d="M8 14c0-2 1-6 4-6s3 4 4 6c1-4 6-4 8-4s7 0 8 4c1-2 0-6 4-6s4 4 4 6c0 4-2 8-6 10l1 6c0 2-1 4-4 4H10c-3 0-4-2-4-4l1-6c-4-2-5-6-2-10z" stroke="currentColor" stroke-width="1.2" fill="currentColor" opacity=".15"/>
+  <circle cx="15" cy="18" r="2" fill="currentColor" opacity=".35"/>
+  <circle cx="25" cy="18" r="2" fill="currentColor" opacity=".35"/>
+  <ellipse cx="20" cy="23" rx="3" ry="2" fill="currentColor" opacity=".2"/>
+  <path d="M17 26c1.5 1.5 4.5 1.5 6 0" stroke="currentColor" stroke-width="1" fill="none" opacity=".25"/>
+</svg>`;
+const ICON_CAT_LG = `<svg width="40" height="40" viewBox="0 0 40 40" fill="none">
+  <path d="M8 32V16l4-10 4 6h8l4-6 4 10v16c0 2-2 4-6 4H14c-4 0-6-2-6-4z" stroke="currentColor" stroke-width="1.2" fill="currentColor" opacity=".15"/>
+  <circle cx="15" cy="20" r="2" fill="currentColor" opacity=".35"/>
+  <circle cx="25" cy="20" r="2" fill="currentColor" opacity=".35"/>
+  <path d="M18 25c1 1 3 1 4 0" stroke="currentColor" stroke-width="1" fill="none" opacity=".3"/>
+  <path d="M14 26c-4 1-7 0-8-1M26 26c4 1 7 0 8-1" stroke="currentColor" stroke-width=".8" opacity=".2"/>
+</svg>`;
+
+// Tips category icons (watercolor style matching the page)
+const ICON_FOOD_SM = `<svg width="18" height="18" viewBox="0 0 18 18" fill="none">
+  <path d="M3 10c0 0 1 4 6 4s6-4 6-4" stroke="var(--earth)" stroke-width="1.2" fill="var(--earth)" opacity=".12" stroke-linecap="round"/>
+  <ellipse cx="9" cy="10" rx="6.5" ry="2" fill="var(--earth-soft)" stroke="var(--earth)" stroke-width=".8"/>
+  <path d="M5 10c.5-1.5 2-3 4-3s3.5 1.5 4 3" fill="var(--earth)" opacity=".18"/>
+  <path d="M7 5c0-1 .6-1.5 0-2.5M9 4c0-1 .6-1.5 0-2.5M11 5c0-1 .6-1.5 0-2.5" stroke="var(--earth)" stroke-width=".7" stroke-linecap="round" opacity=".3"/>
+</svg>`;
+const ICON_CARE_SM = `<svg width="18" height="18" viewBox="0 0 18 18" fill="none">
+  <path d="M9 15c-5.5-3.5-7.5-7-5.5-10 1-1.5 2.5-2 4-1l1.5 1.5L10.5 4c1.5-1 3-.5 4 1 2 3 0 6.5-5.5 10z" fill="var(--wood)" opacity=".15" stroke="var(--wood)" stroke-width=".8"/>
+  <path d="M7 8.5l2 2 3-3.5" stroke="var(--wood)" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" opacity=".35"/>
+</svg>`;
+const ICON_MASSAGE_SM = `<svg width="18" height="18" viewBox="0 0 18 18" fill="none">
+  <path d="M9 4c-3 0-5.5 2-6 5-.5 2 .5 4 2 5 0 0 1.5-1 4-1s4 1 4 1c1.5-1 2.5-3 2-5-.5-3-3-5-6-5z" fill="var(--water)" opacity=".12" stroke="var(--water)" stroke-width=".8"/>
+  <path d="M6 9c.5 0 1.5 1 3 1s2.5-1 3-1" stroke="var(--water)" stroke-width=".8" stroke-linecap="round" opacity=".35"/>
+  <path d="M7 11.5c.5.5 1.5.8 2 .8s1.5-.3 2-.8" stroke="var(--water)" stroke-width=".7" stroke-linecap="round" opacity=".25"/>
+  <circle cx="5" cy="7" r=".6" fill="var(--water)" opacity=".3"/>
+  <circle cx="9" cy="5.5" r=".6" fill="var(--water)" opacity=".3"/>
+  <circle cx="13" cy="7" r=".6" fill="var(--water)" opacity=".3"/>
+</svg>`;
+
+// Tip / lightbulb icon (watercolor style)
 const ICON_TIP = `<svg width="20" height="20" viewBox="0 0 20 20" fill="none">
-  <!-- Light bulb -->
   <circle cx="10" cy="9" r="6" fill="var(--earth)" opacity=".12" stroke="var(--earth)" stroke-width="1" opacity=".5"/>
   <path d="M8 14h4M8.5 15.5h3" stroke="var(--earth)" stroke-width="1" stroke-linecap="round" opacity=".4"/>
   <path d="M10 4v1M5 9H4M16 9h-1M6.5 5.5l.7.7M13.5 5.5l-.7.7" stroke="var(--earth)" stroke-width=".8" stroke-linecap="round" opacity=".35"/>
   <circle cx="10" cy="9" r="2" fill="var(--earth)" opacity=".2"/>
+</svg>`;
+
+// Paw icon (watercolor)
+const ICON_PAW = `<svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+  <ellipse cx="7" cy="9.5" rx="3.5" ry="2.8" fill="var(--text-muted)" opacity=".25"/>
+  <circle cx="3.5" cy="5.5" r="1.5" fill="var(--text-muted)" opacity=".25"/>
+  <circle cx="6" cy="4" r="1.5" fill="var(--text-muted)" opacity=".25"/>
+  <circle cx="8.5" cy="4" r="1.5" fill="var(--text-muted)" opacity=".25"/>
+  <circle cx="10.5" cy="5.5" r="1.5" fill="var(--text-muted)" opacity=".25"/>
 </svg>`;
 
 // ===== QUESTIONS (v3: Q3 with picky option, Q9 reworded) =====
@@ -754,6 +841,9 @@ function renderFiveRow(){
   ).join('');
 }
 renderFiveRow();
+// Inject pet species SVG icons
+document.getElementById('icon-dog').innerHTML = ICON_DOG;
+document.getElementById('icon-cat').innerHTML = ICON_CAT;
 
 function setSp(sp){
   petSp = sp;
@@ -839,20 +929,22 @@ function showResult(){
   window.scrollTo({top:0,behavior:'smooth'});
   const sc=calc(), pc=pcts(sc), r=getType(pc);
   const pi=r.pi, c=EL_COLORS[pi], ek=EL_KEYS[pi];
+  const tips=getTips(r);
 
   let desc=PERS_DESC[ELEMENTS[pi]];
   if(r.mix&&r.si!==null) desc+=`\n\n同時也帶有${ELEMENTS[r.si]}型的特質——`+PERS_DESC[ELEMENTS[r.si]].split('。')[0]+'。';
   let tgs=[...TRAIT_TAGS[ELEMENTS[pi]]];
   if(r.mix&&r.si!==null) tgs=tgs.concat(TRAIT_TAGS[ELEMENTS[r.si]].slice(0,2));
 
-  // Avatar: uploaded photo with watercolor ring, or fallback emoji
+  // Avatar: uploaded photo with watercolor ring, or fallback SVG
+  const petSvgLg = petSp==='cat' ? ICON_CAT_LG : ICON_DOG_LG;
   const avatarHtml = petPhoto
     ? `<div class="pet-photo-frame">
         ${wcRingSvg(c, 100)}
         <img class="photo-circle" src="${petPhoto}" alt="${petName}">
       </div>`
-    : `<div class="r-avatar" style="background:${c}15">
-        <span style="font-size:36px;color:${c};font-weight:700">${petSp==='cat'?'🐱':'🐶'}</span>
+    : `<div class="r-avatar" style="background:${c}15;color:${c}">
+        ${petSvgLg}
         <style>.r-avatar::after{border-color:${c}!important}</style>
       </div>`;
 
@@ -881,17 +973,19 @@ function showResult(){
       <div class="tags">${tgs.map((t,idx)=>{const ci=idx<5?pi:r.si;return`<span class="tag" style="background:${EL_COLORS[ci]}12;color:${EL_COLORS[ci]}">${t}</span>`}).join('')}</div>
     </div>
 
-    <div class="adv-grid">
-      <div class="adv-card">
-        <div class="adv-icon">${ICON_FOOD}</div>
-        <h4>飲食建議</h4>
-        <p>${FOOD[ELEMENTS[pi]]}</p>
-      </div>
-      <div class="adv-card">
-        <div class="adv-icon">${ICON_CARE}</div>
-        <h4>生活照護</h4>
-        <p>${CARE[ELEMENTS[pi]]}</p>
-      </div>
+    <div class="tips-card">
+      <div class="sec-title">${ICON_TIP} ${petName} 的專屬保養 Tips</div>
+      <div class="sec-line"></div>
+      <div class="tips-cat-hd">${ICON_FOOD_SM} 食物調養</div>
+      <div class="tip-row"><span class="tip-num" style="background:${c}">1</span><span class="tip-text">${tips.food[0]}</span></div>
+      <div class="tip-row"><span class="tip-num" style="background:${c}">2</span><span class="tip-text">${tips.food[1]}</span></div>
+      <div class="tip-cat-line"></div>
+      <div class="tips-cat-hd">${ICON_CARE_SM} 日常照護</div>
+      <div class="tip-row"><span class="tip-num" style="background:${c}">3</span><span class="tip-text">${tips.care[0]}</span></div>
+      <div class="tip-row"><span class="tip-num" style="background:${c}">4</span><span class="tip-text">${tips.care[1]}</span></div>
+      <div class="tip-cat-line"></div>
+      <div class="tips-cat-hd">${ICON_MASSAGE_SM} 居家按摩</div>
+      ${tips.massage.map((m,i)=>'<div class="tip-row"><span class="tip-num" style="background:'+c+'">'+(5+i)+'</span><span class="tip-text">'+m+'</span></div>').join('')}
     </div>
 
     <div class="tip-card">
@@ -910,10 +1004,10 @@ function showResult(){
     <!-- Share card overlay -->
     <div class="share-overlay hidden" id="share-overlay" onclick="closeShare(event)">
       <div class="share-modal">
-        <div class="share-hint">長按圖片儲存，或截圖分享到 IG Story / LINE</div>
+        <div class="share-hint">長按圖片即可儲存到手機相簿<br>再分享到 IG Story / LINE</div>
         <div id="share-img-wrap"></div>
         <div class="btn-row" style="margin-top:12px;padding:0 10px">
-          <button class="btn bp" onclick="doNativeShare()">傳送分享</button>
+          <button class="btn bp" onclick="doNativeShare()">分享給朋友</button>
           <button class="btn bs" onclick="closeShare()">關閉</button>
         </div>
       </div>
@@ -1159,8 +1253,8 @@ function genShareCard(){
         ${wcRingSvg(c, 74)}
         <img class="photo-circle" src="${petPhoto}" alt="${petName}">
       </div>`
-    : `<div class="sc-avatar" style="background:${c}15">
-        <span style="font-size:26px">${petSp==='cat'?'🐱':'🐶'}</span>
+    : `<div class="sc-avatar" style="background:${c}15;color:${c}">
+        ${petSp==='cat'?ICON_CAT_LG:ICON_DOG_LG}
       </div>`;
 
   let tgs=[...TRAIT_TAGS[ELEMENTS[pi]].slice(0,3)];
@@ -1190,7 +1284,7 @@ function genShareCard(){
         <div class="sc-divider"></div>
         <div class="sc-footer">
           <strong>想更深入了解牠的體質嗎？</strong><br>
-          歡迎預約中獸醫體質諮詢<br>或加入社群一起討論 🐾
+          歡迎預約中獸醫體質諮詢<br>或加入社群一起討論 ${ICON_PAW}
         </div>
       </div>
     </div>
@@ -1237,12 +1331,13 @@ function closeShare(e){
 }
 
 async function doNativeShare(){
-  if(shareData.img && navigator.share && navigator.canShare){
+  // 1. Try Web Share API with file (works on most modern mobile browsers)
+  if(shareData.img && navigator.share){
     try{
       const resp = await fetch(shareData.img);
       const blob = await resp.blob();
       const file = new File([blob],`${shareData.name}_五行體質.png`,{type:'image/png'});
-      if(navigator.canShare({files:[file]})){
+      if(navigator.canShare && navigator.canShare({files:[file]})){
         await navigator.share({
           title:`${shareData.name} 的五行體質分析`,
           text:`${shareData.name} 是${shareData.type}！快來測測你家毛孩的五行體質 🐾`,
@@ -1250,17 +1345,31 @@ async function doNativeShare(){
         });
         return;
       }
+    }catch(e){ if(e.name==='AbortError') return; }
+    // 2. Try text-only share as fallback
+    try{
+      await navigator.share({
+        title:`${shareData.name} 的五行體質分析`,
+        text:`${shareData.name} 是${shareData.type}！快來測測你家毛孩的五行體質 🐾`
+      });
+      return;
+    }catch(e){ if(e.name==='AbortError') return; }
+  }
+  // 3. Detect in-app browsers (LINE, FB, IG) that don't support download
+  const isInApp = /Line|FBAN|FBAV|Instagram/i.test(navigator.userAgent||'');
+  if(!isInApp && shareData.img){
+    try{
+      const a=document.createElement('a');
+      a.href=shareData.img;
+      a.download=`${petName}_五行體質分析.png`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      return;
     }catch(e){}
   }
-  // Fallback: download image
-  if(shareData.img){
-    const a=document.createElement('a');
-    a.href=shareData.img;
-    a.download=`${petName}_五行體質分析.png`;
-    a.click();
-  } else {
-    alert('請長按圖片儲存後分享唷！');
-  }
+  // 4. Final fallback: instruct user to long-press save
+  alert('長按上方圖片即可儲存到手機相簿，\n再分享到 LINE 或 IG Story 唷！');
 }
 
 function restart(){
