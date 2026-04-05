@@ -1,0 +1,1280 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>毛孩五行體質分析 | Dr. Chiu Chiu</title>
+<meta name="description" content="只要 10 個問題，就能了解你家毛孩的五行體質比例、性格傾向、健康弱點和日常保養方向。By Dr. Chiu Chiu 拾貳寵動物醫院">
+<meta name="author" content="Dr. Chiu Chiu — 拾貳寵動物醫院">
+
+<!-- Open Graph / Social Sharing -->
+<meta property="og:type" content="website">
+<meta property="og:title" content="毛孩五行體質分析 — 10 題測出牠的體質">
+<meta property="og:description" content="每隻毛孩都有獨一無二的五行體質比例。快來測測你家毛孩是木型將軍、火型皇帝，還是土型母親？">
+<meta property="og:image" content="https://via.placeholder.com/1200x630/FAF8F4/4A3D33?text=%E6%AF%9B%E5%AD%A9%E4%BA%94%E8%A1%8C%E9%AB%94%E8%B3%AA%E5%88%86%E6%9E%90">
+<meta property="og:locale" content="zh_TW">
+
+<!-- iOS / Safari -->
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="五行體質分析">
+<link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%23FAF8F4'/><text y='68' x='12' font-size='55'>🐾</text></svg>">
+
+<!-- Android / PWA -->
+<meta name="theme-color" content="#FAF8F4">
+<meta name="mobile-web-app-capable" content="yes">
+
+<!-- Preload fonts -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700;900&family=Playfair+Display:ital,wght@0,400;0,600;1,400&display=swap">
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<style>
+
+:root {
+  --bg: #FAF8F4;
+  --bg-warm: #F3EDE5;
+  --text: #4A3D33;
+  --text-light: #8A7B6B;
+  --text-muted: #B5A898;
+  --wood: #7A9970;
+  --wood-soft: #D2E2CC;
+  --fire: #BF7565;
+  --fire-soft: #EEDBD6;
+  --earth: #C4A875;
+  --earth-soft: #EDE4D4;
+  --metal: #9A9A9A;
+  --metal-soft: #E0DEDE;
+  --water: #7A9DAB;
+  --water-soft: #D1E1E8;
+  --btn: #7A8E76;
+  --btn-hover: #637360;
+  --card: rgba(255,255,252,0.72);
+  --border: #E5DDD3;
+  --shadow: rgba(74,61,51,0.04);
+}
+
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
+
+body{
+  font-family:'Noto Sans TC',sans-serif;
+  background:var(--bg);
+  color:var(--text);
+  min-height:100vh;
+  overflow-x:hidden;
+  -webkit-font-smoothing:antialiased;
+  -moz-osx-font-smoothing:grayscale;
+}
+/* Prevent iOS tap highlight */
+a,button,input,select{-webkit-tap-highlight-color:transparent}
+/* Safe area padding for notch devices */
+.container{padding-bottom:max(50px,env(safe-area-inset-bottom))}
+
+/* Footer */
+.footer{
+  text-align:center;padding:30px 0 16px;
+  font-size:10px;color:var(--text-muted);letter-spacing:1px;
+  font-family:'Playfair Display',serif;font-style:italic;
+}
+
+/* ===== Watercolor Background ===== */
+.bg-layer{position:fixed;inset:0;pointer-events:none;z-index:0;overflow:hidden}
+.bg-blob{position:absolute;border-radius:50%;filter:blur(90px)}
+.bb1{width:340px;height:340px;top:-100px;right:-80px;background:var(--wood);opacity:.1}
+.bb2{width:280px;height:280px;bottom:5%;left:-100px;background:var(--water);opacity:.06}
+.bb3{width:220px;height:220px;top:35%;right:-50px;background:var(--earth);opacity:.05}
+.bb4{width:180px;height:180px;bottom:-30px;left:30%;background:var(--fire);opacity:.04}
+
+/* Leaf SVG decorations */
+.leaf-r{position:fixed;top:20px;right:-5px;width:110px;opacity:.14;pointer-events:none;z-index:0}
+.leaf-l{position:fixed;bottom:40px;left:-15px;width:90px;opacity:.09;pointer-events:none;z-index:0;transform:scaleX(-1) rotate(10deg)}
+
+.container{max-width:420px;margin:0 auto;padding:16px 18px 50px;position:relative;z-index:1}
+
+/* ===== Header ===== */
+.header{text-align:center;padding:26px 0 10px}
+.header h1{font-size:23px;font-weight:900;letter-spacing:5px;color:var(--text);line-height:1.3}
+.header .sub{font-family:'Playfair Display',serif;font-size:11.5px;color:var(--text-muted);margin-top:5px;letter-spacing:2.5px;font-weight:400;font-style:italic}
+.header .brand{font-family:'Playfair Display',serif;font-size:11px;color:var(--btn);margin-top:10px;letter-spacing:2px}
+.h-line{width:36px;height:1px;background:var(--border);margin:12px auto 0}
+
+/* ===== Five Element Icons (SVG) ===== */
+.el-icon{display:inline-block;vertical-align:middle}
+.el-icon svg{width:100%;height:100%}
+
+/* ===== Progress ===== */
+.progress-wrap{margin:14px 0 20px}
+.progress-label{display:flex;justify-content:space-between;font-size:11px;color:var(--text-muted);margin-bottom:5px;letter-spacing:.5px}
+.progress-bar{width:100%;height:3px;background:var(--border);border-radius:2px;overflow:hidden}
+.progress-fill{height:100%;border-radius:2px;transition:width .5s,background .5s}
+
+/* ===== Card ===== */
+.card{
+  background:var(--card);
+  backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);
+  border:1px solid rgba(229,221,211,.55);
+  border-radius:22px;
+  padding:26px 20px;
+  box-shadow:0 6px 28px var(--shadow);
+  animation:fadeUp .4s ease;
+}
+@keyframes fadeUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
+
+.q-num{font-family:'Playfair Display',serif;font-size:13px;color:var(--text-muted);margin-bottom:5px}
+.q-cat{display:inline-block;font-size:10px;padding:3px 12px;border-radius:10px;margin-bottom:14px;font-weight:500;letter-spacing:.5px}
+.qc-p{background:var(--wood-soft);color:#4A7040}
+.qc-b{background:var(--earth-soft);color:#8A6F3A}
+.qc-h{background:var(--water-soft);color:#4A7A88}
+.q-text{font-size:17px;font-weight:500;line-height:1.7;margin-bottom:6px}
+.q-hint{font-size:12px;color:var(--text-muted);margin-bottom:16px;line-height:1.5}
+
+/* ===== Options ===== */
+.opts{display:flex;flex-direction:column;gap:7px}
+.opt{
+  display:flex;align-items:center;gap:11px;
+  width:100%;padding:12px 15px;
+  background:white;border:1.5px solid var(--border);border-radius:13px;
+  font-size:14px;font-family:'Noto Sans TC',sans-serif;color:var(--text);
+  cursor:pointer;transition:all .18s;text-align:left;line-height:1.45;
+}
+.opt:active{transform:scale(.98)}
+.opt .ck{
+  width:20px;height:20px;border-radius:5px;border:1.5px solid var(--border);
+  display:flex;align-items:center;justify-content:center;flex-shrink:0;
+  background:white;transition:all .18s;
+}
+.opt:hover{border-color:var(--btn);background:rgba(122,142,118,.03)}
+.opt.on{border-color:var(--btn);background:rgba(122,142,118,.06)}
+.opt.on .ck{background:var(--btn);border-color:var(--btn)}
+.opt.on .ck::after{content:'✓';color:#fff;font-size:12px;font-weight:600}
+
+/* ===== Buttons ===== */
+.btn-row{display:flex;gap:10px;margin-top:16px}
+.btn{
+  flex:1;padding:13px 0;border:none;border-radius:13px;
+  font-size:14px;font-family:'Noto Sans TC',sans-serif;font-weight:500;
+  cursor:pointer;transition:all .18s;letter-spacing:.5px;
+}
+.btn:active{transform:scale(.97)}
+.bp{background:var(--btn);color:#fff}
+.bp:hover{background:var(--btn-hover)}
+.bp:disabled{opacity:.3;cursor:not-allowed}
+.bs{background:#fff;color:var(--text);border:1.5px solid var(--border)}
+
+/* ===== Intro ===== */
+.intro{text-align:center;padding:20px 0 14px}
+.intro-visual{margin:8px 0 18px}
+.intro p{font-size:14px;color:var(--text-light);line-height:1.9;margin-bottom:14px;font-weight:300}
+
+.five-row{display:flex;justify-content:center;gap:8px;margin:18px 0}
+.five-item{text-align:center}
+.five-circle{
+  width:48px;height:48px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  margin:0 auto 4px;box-shadow:0 2px 10px var(--shadow);
+}
+.five-label{font-size:10.5px;color:var(--text-light);font-weight:500;letter-spacing:.5px}
+
+.pet-section{margin:22px 0 6px;text-align:left}
+.pet-section label{font-size:14px;font-weight:500;display:block;margin-bottom:7px}
+.pet-row{display:flex;gap:10px}
+.pet-in{
+  flex:1;padding:12px 15px;border:1.5px solid var(--border);border-radius:13px;
+  font-size:15px;font-family:'Noto Sans TC',sans-serif;background:#fff;
+  color:var(--text);outline:none;transition:border-color .2s;
+}
+.pet-in:focus{border-color:var(--btn)}
+.pet-in::placeholder{color:var(--text-muted)}
+.sp-sel{
+  width:88px;padding:12px 6px;border:1.5px solid var(--border);border-radius:13px;
+  font-size:15px;font-family:'Noto Sans TC',sans-serif;background:#fff;
+  color:var(--text);outline:none;appearance:none;text-align:center;
+}
+/* Species toggle buttons */
+.sp-toggle{display:flex;gap:6px}
+.sp-btn{
+  width:44px;height:44px;border:1.5px solid var(--border);border-radius:12px;
+  background:#fff;cursor:pointer;display:flex;align-items:center;justify-content:center;
+  transition:all .18s;padding:0;
+  font-family:'Noto Sans TC',sans-serif;font-size:15px;font-weight:500;color:var(--text-light);
+}
+.sp-btn:hover{border-color:var(--btn)}
+.sp-btn.active{border-color:var(--btn);background:rgba(122,142,118,.08);box-shadow:0 0 0 2px rgba(122,142,118,.12);color:var(--text);font-weight:600}
+
+/* Pet photo upload */
+.photo-section{margin:16px 0 6px;text-align:left}
+.photo-section label{font-size:14px;font-weight:500;display:block;margin-bottom:7px}
+.photo-row{display:flex;align-items:center;gap:12px}
+.photo-upload-btn{
+  width:64px;height:64px;border:1.5px dashed var(--border);border-radius:50%;
+  background:#fff;cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;
+  transition:all .18s;overflow:hidden;flex-shrink:0;
+}
+.photo-upload-btn:hover{border-color:var(--btn)}
+.photo-upload-btn.has-photo{border-style:solid;border-color:var(--btn);padding:0}
+.photo-upload-btn img{width:100%;height:100%;object-fit:cover;border-radius:50%}
+.photo-upload-btn .ph-icon{font-size:20px;color:var(--text-muted);line-height:1}
+.photo-upload-btn .ph-text{font-size:9px;color:var(--text-muted);margin-top:2px}
+.photo-hint{font-size:12px;color:var(--text-muted);line-height:1.6;font-weight:300}
+
+/* Watercolor photo frame in results */
+.pet-photo-frame{
+  width:100px;height:100px;border-radius:50%;
+  margin:0 auto 12px;position:relative;
+}
+.pet-photo-frame .photo-circle{
+  width:78px;height:78px;border-radius:50%;
+  object-fit:cover;aspect-ratio:1/1;
+  position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);
+  z-index:2;box-shadow:0 3px 14px rgba(0,0,0,.10);
+}
+.pet-photo-frame .wc-ring{
+  position:absolute;inset:0;border-radius:50%;z-index:1;
+}
+/* Share card photo */
+.sc-photo-frame{
+  width:74px;height:74px;border-radius:50%;
+  margin:0 auto 10px;position:relative;
+}
+.sc-photo-frame .photo-circle{
+  width:58px;height:58px;border-radius:50%;
+  object-fit:cover;aspect-ratio:1/1;
+  position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);
+  z-index:2;box-shadow:0 2px 10px rgba(0,0,0,.08);
+}
+.sc-photo-frame .wc-ring{
+  position:absolute;inset:0;border-radius:50%;z-index:1;
+}
+
+/* ===== Result ===== */
+.rp{animation:fadeUp .5s}
+.r-head{text-align:center;padding:14px 0}
+.r-avatar{
+  width:84px;height:84px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  margin:0 auto 10px;position:relative;
+  box-shadow:0 4px 20px rgba(0,0,0,.06);
+}
+.r-avatar::after{content:'';position:absolute;inset:-5px;border-radius:50%;border:1.5px solid;opacity:.2}
+.r-name{font-size:22px;font-weight:700}
+.r-label{font-family:'Playfair Display',serif;font-size:12px;color:var(--text-muted);margin-top:2px;letter-spacing:2px}
+.r-badge{display:inline-flex;align-items:center;gap:8px;padding:8px 22px;border-radius:20px;font-size:19px;font-weight:700;margin:12px 0 4px;letter-spacing:1px}
+.r-nick{font-size:14px;margin-top:3px;font-weight:400}
+.r-sub{font-size:13px;color:var(--text-muted);margin-top:2px}
+
+/* Chart */
+.chart-card{
+  background:var(--card);backdrop-filter:blur(18px);
+  border:1px solid rgba(229,221,211,.55);border-radius:22px;
+  padding:22px 14px 18px;margin:16px 0;text-align:center;
+  box-shadow:0 6px 28px var(--shadow);
+}
+.chart-card h3{font-size:12px;font-weight:400;color:var(--text-muted);letter-spacing:1.5px;margin-bottom:6px}
+.chart-wrap{position:relative;width:310px;height:310px;margin:0 auto}
+.chart-wrap canvas{display:block}
+
+/* Element labels around chart */
+.el-labels{
+  display:flex;justify-content:space-around;
+  margin-top:10px;padding:0 6px;
+}
+.el-lbl{text-align:center;flex:1}
+.el-lbl-icon{margin:0 auto 2px}
+.el-lbl-char{font-size:14px;font-weight:700;display:block}
+.el-lbl-en{font-family:'Playfair Display',serif;font-size:8.5px;letter-spacing:1px;text-transform:uppercase;display:block;color:var(--text-muted);margin-top:1px}
+.el-lbl-zh{font-size:10px;display:block;margin-top:1px;font-weight:300;color:var(--text-light)}
+
+.pct-bars{display:flex;flex-direction:column;gap:5px;margin-top:14px;padding:0 4px}
+.pct-row{display:flex;align-items:center;gap:7px;font-size:12px}
+.pct-lbl{width:50px;text-align:right;font-weight:500;flex-shrink:0;display:flex;align-items:center;justify-content:flex-end;gap:4px}
+.pct-bg{flex:1;height:5px;background:var(--border);border-radius:3px;overflow:hidden}
+.pct-fill{height:100%;border-radius:3px;transition:width 1.2s}
+.pct-val{width:30px;font-size:11px;color:var(--text-muted);flex-shrink:0}
+
+/* Personality */
+.pers-card{
+  background:var(--card);backdrop-filter:blur(18px);
+  border:1px solid rgba(229,221,211,.55);border-radius:22px;
+  padding:22px 20px;margin:16px 0;box-shadow:0 6px 28px var(--shadow);
+}
+.sec-title{font-size:15px;font-weight:500;margin-bottom:4px;display:flex;align-items:center;gap:7px}
+.sec-line{width:28px;height:1px;background:var(--border);margin:8px 0 12px}
+.pers-desc{font-size:14px;line-height:1.9;font-weight:300}
+.tags{display:flex;flex-wrap:wrap;gap:6px;margin-top:12px}
+.tag{padding:4px 11px;border-radius:11px;font-size:11.5px;font-weight:400}
+
+/* Advice */
+.adv-grid{display:grid;grid-template-columns:1fr 1fr;gap:11px;margin:16px 0}
+.adv-card{
+  background:var(--card);backdrop-filter:blur(18px);
+  border:1px solid rgba(229,221,211,.55);border-radius:18px;
+  padding:20px 13px 16px;text-align:center;box-shadow:0 6px 28px var(--shadow);
+}
+.adv-icon{margin:0 auto 10px}
+.adv-card h4{font-size:13px;font-weight:500;margin-bottom:8px}
+.adv-card p{font-size:11.5px;line-height:1.7;color:var(--text-light);font-weight:300}
+
+/* Tip & CTA */
+.tip-card{
+  background:var(--card);backdrop-filter:blur(18px);
+  border:1px solid rgba(229,221,211,.55);border-radius:18px;
+  padding:18px 18px;margin:16px 0;font-size:13px;line-height:1.8;
+  color:var(--text-light);font-weight:300;box-shadow:0 6px 28px var(--shadow);
+}
+.tip-card strong{color:var(--text);font-weight:500}
+.cta-card{
+  text-align:center;margin:18px 0 6px;padding:20px 18px;
+  background:var(--card);backdrop-filter:blur(18px);
+  border:1px solid rgba(229,221,211,.55);border-radius:18px;
+  box-shadow:0 6px 28px var(--shadow);
+}
+.cta-card p{font-size:13px;color:var(--text-light);margin-bottom:12px;line-height:1.7;font-weight:300}
+
+/* Share overlay */
+.share-overlay{
+  position:fixed;inset:0;z-index:100;
+  background:rgba(74,61,51,.6);
+  backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);
+  display:flex;align-items:center;justify-content:center;
+  padding:20px;
+  animation:fadeIn .3s;
+}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+.share-modal{
+  background:var(--bg);border-radius:20px;
+  padding:16px;max-width:380px;width:100%;
+  max-height:90vh;overflow-y:auto;
+  box-shadow:0 12px 48px rgba(0,0,0,.2);
+}
+.share-hint{
+  text-align:center;font-size:12px;color:var(--text-light);
+  margin-bottom:12px;line-height:1.6;font-weight:300;
+}
+.share-card{
+  background:var(--bg);border-radius:16px;
+  padding:28px 22px;text-align:center;
+  position:relative;overflow:hidden;
+}
+.share-card::before{
+  content:'';position:absolute;top:-40px;right:-30px;
+  width:180px;height:180px;border-radius:50%;
+  background:var(--wood);opacity:.06;filter:blur(40px);
+}
+.share-card::after{
+  content:'';position:absolute;bottom:-30px;left:-20px;
+  width:140px;height:140px;border-radius:50%;
+  background:var(--water);opacity:.04;filter:blur(40px);
+}
+.sc-inner{position:relative;z-index:1}
+.sc-title{font-size:16px;font-weight:700;letter-spacing:3px;margin-bottom:2px}
+.sc-sub{font-family:'Playfair Display',serif;font-size:9px;color:var(--text-muted);letter-spacing:2px;font-style:italic}
+.sc-brand{font-family:'Playfair Display',serif;font-size:9px;color:var(--btn);margin-top:6px;letter-spacing:1.5px}
+.sc-divider{width:30px;height:1px;background:var(--border);margin:14px auto}
+.sc-avatar{width:60px;height:60px;border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 8px;box-shadow:0 3px 12px rgba(0,0,0,.06)}
+.sc-name{font-size:18px;font-weight:700;margin-bottom:2px}
+.sc-result-label{font-size:10px;color:var(--text-muted);letter-spacing:1px}
+.sc-badge{display:inline-flex;align-items:center;gap:6px;padding:6px 18px;border-radius:16px;font-size:16px;font-weight:700;margin:10px 0 4px;letter-spacing:1px}
+.sc-nick{font-size:12px;margin-bottom:12px}
+.sc-chart-wrap{width:180px;height:180px;margin:0 auto}
+.sc-tags{display:flex;flex-wrap:wrap;justify-content:center;gap:4px;margin:12px 0}
+.sc-tag{padding:3px 10px;border-radius:10px;font-size:10px}
+.sc-footer{margin-top:14px;font-size:10px;color:var(--text-muted);line-height:1.6}
+.sc-footer strong{color:var(--text-light);font-weight:500}
+.share-img{width:100%;border-radius:12px;display:block}
+
+.hidden{display:none!important}
+</style>
+</head>
+<body>
+
+<div class="bg-layer">
+  <div class="bg-blob bb1"></div><div class="bg-blob bb2"></div>
+  <div class="bg-blob bb3"></div><div class="bg-blob bb4"></div>
+</div>
+
+<!-- Leaf decorations (SVG) -->
+<svg class="leaf-r" viewBox="0 0 100 260" fill="none">
+  <g><path d="M50 8C65 30 78 55 72 85C85 70 92 90 88 115C78 108 74 120 68 140C80 135 85 155 78 175C68 165 62 178 58 195C68 190 72 210 64 230C55 220 50 232 48 248" stroke="#7A9970" stroke-width="1.2" fill="none" opacity=".5"/>
+  <path d="M72 85C55 78 48 58 50 8" fill="#7A9970" opacity=".08"/>
+  <path d="M88 115C72 105 65 88 72 85" fill="#7A9970" opacity=".06"/>
+  <path d="M78 175C62 168 58 148 68 140" fill="#7A9970" opacity=".06"/>
+  <path d="M64 230C50 222 48 200 58 195" fill="#7A9970" opacity=".05"/>
+  <path d="M50 8C35 30 22 55 28 85C15 70 8 90 12 115C22 108 26 120 32 140C20 135 15 155 22 175C32 165 38 178 42 195C32 190 28 210 36 230C45 220 50 232 48 248" stroke="#7A9970" stroke-width="1" fill="none" opacity=".35"/>
+  <path d="M28 85C45 78 52 58 50 8" fill="#7A9970" opacity=".06"/>
+  <path d="M12 115C28 105 35 88 28 85" fill="#7A9970" opacity=".05"/>
+  </g>
+</svg>
+<svg class="leaf-l" viewBox="0 0 80 220" fill="none">
+  <g><path d="M40 10C52 28 62 50 56 75C66 62 72 80 68 100C60 94 56 105 52 120C62 116 66 132 60 148C52 140 48 150 45 164" stroke="#7A9DAB" stroke-width="1" fill="none" opacity=".5"/>
+  <path d="M56 75C44 70 38 52 40 10" fill="#7A9DAB" opacity=".06"/>
+  <path d="M40 10C28 28 18 50 24 75C14 62 8 80 12 100C20 94 24 105 28 120" stroke="#7A9DAB" stroke-width=".8" fill="none" opacity=".35"/>
+  </g>
+</svg>
+
+<div class="container">
+
+<div class="header">
+  <h1>毛孩五行體質分析</h1>
+  <div class="sub">Five Element Constitution Analysis</div>
+  <div class="brand">By Dr. Chiu Chiu</div>
+  <div class="h-line"></div>
+</div>
+
+<!-- ===== INTRO ===== -->
+<div id="intro-page">
+  <div class="intro">
+    <div class="intro-visual">
+      <svg width="64" height="64" viewBox="0 0 64 64" fill="none">
+        <circle cx="32" cy="32" r="30" fill="var(--wood-soft)" opacity=".5"/>
+        <path d="M22 38c-2-6 0-12 4-16s10-5 15-2c4-4 10-3 13 2s2 12-2 15c3 5 1 11-3 14s-10 2-13-1c-5 4-11 3-14-1s-3-8 0-11z" fill="var(--wood)" opacity=".18" stroke="var(--wood)" stroke-width="1" opacity=".4"/>
+        <circle cx="26" cy="30" r="2.5" fill="var(--text)" opacity=".5"/>
+        <circle cx="38" cy="30" r="2.5" fill="var(--text)" opacity=".5"/>
+        <path d="M29 37c1.5 2 3.5 3 5.5 0" stroke="var(--text)" stroke-width="1.2" stroke-linecap="round" fill="none" opacity=".4"/>
+      </svg>
+    </div>
+    <p>
+      每隻毛孩都有獨一無二的五行體質比例<br>
+      只要 <strong>10 個問題</strong>，就能了解牠的<br>
+      性格傾向、健康弱點和日常保養方向
+    </p>
+    <div class="five-row" id="five-row"></div>
+  </div>
+  <div class="pet-section">
+    <label>毛孩的名字是？</label>
+    <div class="pet-row">
+      <input type="text" id="pet-name" class="pet-in" placeholder="例：阿財">
+      <div class="sp-toggle">
+        <button type="button" class="sp-btn active" id="sp-dog" onclick="setSp('dog')">狗</button>
+        <button type="button" class="sp-btn" id="sp-cat" onclick="setSp('cat')">貓</button>
+      </div>
+    </div>
+  </div>
+  <div class="photo-section">
+    <label>上傳牠的照片（選填）</label>
+    <div class="photo-row">
+      <div class="photo-upload-btn" id="photo-btn" onclick="document.getElementById('photo-input').click()">
+        <span class="ph-icon">+</span>
+        <span class="ph-text">上傳</span>
+      </div>
+      <div class="photo-hint">上傳照片後，分析結果<br>會附上牠的專屬頭像</div>
+    </div>
+    <input type="file" id="photo-input" accept="image/*" style="display:none" onchange="handlePhoto(this)">
+  </div>
+  <div class="btn-row" style="margin-top:22px">
+    <button class="btn bp" onclick="startQuiz()" style="flex:1">開始測驗 →</button>
+  </div>
+</div>
+
+<!-- ===== QUIZ ===== -->
+<div id="quiz-page" class="hidden">
+  <div class="progress-wrap">
+    <div class="progress-label">
+      <span id="p-text"></span><span id="p-cat"></span>
+    </div>
+    <div class="progress-bar"><div class="progress-fill" id="p-fill"></div></div>
+  </div>
+  <div id="q-area"></div>
+</div>
+
+<!-- ===== RESULT ===== -->
+<div id="result-page" class="hidden"></div>
+
+<div class="footer">© 2026 Dr. Chiu Chiu</div>
+
+</div>
+
+<script>
+// ===== SVG ICON SYSTEM =====
+// Each element has a unique hand-drawn style icon
+const EL_SVGS = {
+  wood: `<svg viewBox="0 0 40 40" fill="none"><path d="M20 6c-3 4-8 10-6 18 2 5 6 8 6 10V6z" fill="#7A9970" opacity=".2"/><path d="M20 6c3 4 8 10 6 18-2 5-6 8-6 10V6z" fill="#7A9970" opacity=".15"/><path d="M20 6v28" stroke="#7A9970" stroke-width="1.2"/><path d="M20 12c-4 2-7 6-6 11" stroke="#7A9970" stroke-width=".8" fill="none" opacity=".6"/><path d="M20 16c4 2 6 5 5 9" stroke="#7A9970" stroke-width=".8" fill="none" opacity=".6"/></svg>`,
+
+  fire: `<svg viewBox="0 0 40 40" fill="none"><path d="M20 5c-2 6-8 12-6 20 1 5 4 7 6 9 2-2 5-4 6-9 2-8-4-14-6-20z" fill="#BF7565" opacity=".18"/><path d="M20 5c-1 4-5 9-4 15s3 6 4 7c1-1 3-2 4-7s-3-11-4-15z" fill="#BF7565" opacity=".12"/><path d="M20 14c-1 3-3 6-2 10s2 4 2 5c0-1 1-2 2-5s-1-7-2-10z" fill="#BF7565" opacity=".25"/></svg>`,
+
+  earth: `<svg viewBox="0 0 40 40" fill="none"><path d="M8 28c2-6 6-12 12-14s10 2 12 8c1 4 0 8-4 10s-8 1-12-1-6-1-8-3z" fill="#C4A875" opacity=".18"/><ellipse cx="20" cy="26" rx="13" ry="6" fill="#C4A875" opacity=".1"/><path d="M14 22c2-3 4-5 6-5s4 2 6 5" stroke="#C4A875" stroke-width=".8" fill="none" opacity=".4"/><path d="M12 26h16" stroke="#C4A875" stroke-width=".6" opacity=".3"/></svg>`,
+
+  metal: `<svg viewBox="0 0 40 40" fill="none"><path d="M20 7l-12 13h8l-4 14 12-15h-8z" fill="#9A9A9A" opacity=".15" stroke="#9A9A9A" stroke-width=".8" stroke-linejoin="round" opacity=".35"/><circle cx="20" cy="20" r="10" fill="none" stroke="#9A9A9A" stroke-width=".6" opacity=".2" stroke-dasharray="2 3"/></svg>`,
+
+  water: `<svg viewBox="0 0 40 40" fill="none"><path d="M20 6c-4 6-10 13-10 20a10 10 0 0020 0c0-7-6-14-10-20z" fill="#7A9DAB" opacity=".15"/><path d="M20 10c-3 5-7 10-7 16a7 7 0 0014 0c0-6-4-11-7-16z" fill="#7A9DAB" opacity=".1"/><path d="M16 24c2-1 4-1 6 0s3 2 4 1" stroke="#7A9DAB" stroke-width=".7" fill="none" opacity=".4"/></svg>`
+};
+
+const ELEMENTS = ['木','火','土','金','水'];
+const EL_KEYS = ['wood','fire','earth','metal','water'];
+const EL_COLORS = ['#7A9970','#BF7565','#C4A875','#9A9A9A','#7A9DAB'];
+const EL_SOFTS = ['#D2E2CC','#EEDBD6','#EDE4D4','#E0DEDE','#D1E1E8'];
+const EL_NICKS = ['將軍 The General','皇帝 The Emperor','母親 The Mother','管理者 The Organizer','觀察者 The Observer'];
+const EL_TRAITS_EN = [['ACTIVE','ADVENTUROUS'],['PASSIONATE','LOYAL'],['CALM','PATIENT'],['INDEPENDENT','ORGANIZED'],['CAUTIOUS','ALERT']];
+const EL_TRAITS_ZH = [['活躍','冒險'],['熱情','忠誠'],['平靜','耐心'],['獨立','有條理'],['謹慎','警覺']];
+
+const MIX_NICKS = {
+  '木火':'熱血將軍','木土':'溫柔的開拓者','木金':'冷靜的指揮官','木水':'深謀遠慮的將軍',
+  '火木':'熱血將軍','火土':'暖心的社交家','火金':'嚴謹的表演者','火水':'外熱內冷的觀察家',
+  '土木':'溫柔的開拓者','土火':'暖心的社交家','土金':'安穩的守護者','土水':'沉穩的老靈魂',
+  '金木':'冷靜的指揮官','金火':'嚴謹的表演者','金土':'安穩的守護者','金水':'安靜的哲學家',
+  '水木':'深謀遠慮的將軍','水火':'外熱內冷的觀察家','水土':'沉穩的老靈魂','水金':'安靜的哲學家'
+};
+
+const PERS_DESC = {
+  '木':'有開拓精神、果斷好勝，是天生的領導者。反應敏捷、適應力強，但有時候會比較固執。牠喜歡掌控全局，在群體中自然而然就會成為老大。',
+  '火':'天生的社交明星，熱情外向、愛撒嬌、愛被關注。牠的感染力超強，走到哪都是焦點，但有時候會比較難靜下來。',
+  '土':'性格溫和穩定，是天生的暖心小天使。隨和好養、包容力強，跟誰都能相處。牠不急不躁，用自己的步調慢慢享受生活。',
+  '金':'安靜獨立、有自己的規矩和節奏。牠不太黏人但很忠心，喜歡秩序和規律的生活，毛髮通常也特別漂亮。',
+  '水':'安靜內斂的觀察者，看起來膽小但其實很聰明。牠喜歡在安全的角落默默觀察一切，用自己的方式理解這個世界。'
+};
+const TRAIT_TAGS = {
+  '木':['果斷好勝','反應敏捷','適應力強','主導性強','精力旺盛'],
+  '火':['熱情外向','愛撒嬌','社交達人','敏感細膩','充滿活力'],
+  '土':['溫和穩定','隨和好養','包容力強','忠誠可靠','慢步調'],
+  '金':['安靜獨立','愛秩序','不太黏人','自律規律','毛髮漂亮'],
+  '水':['內斂觀察','謹慎小心','聰明敏銳','喜歡安全感','耐力型']
+};
+const FOOD = {
+  '木':'雞肝或豬肝、綠色蔬菜（菠菜、高麗菜）、胡蘿蔔、少量柑橘類。疏肝理氣、養護筋骨。',
+  '火':'豬心、魚肉、糙米、菠菜、花椰菜、芹菜、蘑菇。養心安神、滋陰降火。',
+  '土':'牛肚、羊肉、雞肉、生薑、地瓜、南瓜。健脾化濕、溫養中焦。',
+  '金':'雞蛋、鴨肉、大麥、豆腐、白米、梨。潤肺養陰、生津止燥。',
+  '水':'豬腰子、雞蛋、鴨肉、地瓜、黑豆。補腎溫陽、強筋健骨。'
+};
+const CARE = {
+  '木':'多提供發洩精力的活動，避免長期被關或情緒壓抑。春天特別注意過敏和眼睛保養。',
+  '火':'規律的安撫與陪伴，避免過度興奮。夏天注意防暑，關注心臟健康。',
+  '土':'飲食定時定量，避免潮濕環境。換季時注意腸胃，控制體重。',
+  '金':'維持穩定的生活規律，秋冬注意皮膚保濕和呼吸道保養。',
+  '水':'提供安全溫暖的環境，冬天注意保暖。定期關注腰背與關節。'
+};
+const SEASON = {'木':'春天','火':'夏天','土':'換季（尤其長夏梅雨季）','金':'秋天','水':'冬天'};
+
+// Advice card SVG icons — clear, recognizable
+const ICON_FOOD = `<svg width="40" height="40" viewBox="0 0 40 40" fill="none">
+  <!-- Food bowl -->
+  <path d="M8 22c0 0 2 8 12 8s12-8 12-8" stroke="var(--earth)" stroke-width="1.8" fill="var(--earth)" opacity=".12" stroke-linecap="round"/>
+  <ellipse cx="20" cy="22" rx="13" ry="4" fill="var(--earth-soft)" stroke="var(--earth)" stroke-width="1.2"/>
+  <!-- Food mound -->
+  <path d="M11 22c1-3 4-6 9-6s8 3 9 6" fill="var(--earth)" opacity=".2"/>
+  <!-- Steam lines -->
+  <path d="M14 13c0-2 1.5-3 0-5" stroke="var(--earth)" stroke-width="1" stroke-linecap="round" opacity=".35"/>
+  <path d="M20 11c0-2 1.5-3 0-5" stroke="var(--earth)" stroke-width="1" stroke-linecap="round" opacity=".35"/>
+  <path d="M26 13c0-2 1.5-3 0-5" stroke="var(--earth)" stroke-width="1" stroke-linecap="round" opacity=".35"/>
+  <!-- Leaf garnish -->
+  <path d="M24 17c2-1 4-1 4 1s-2 2-4 1z" fill="var(--wood)" opacity=".4"/>
+</svg>`;
+const ICON_CARE = `<svg width="40" height="40" viewBox="0 0 40 40" fill="none">
+  <!-- Heart (care/love) -->
+  <path d="M20 32c-12-8-16-14-12-20 2-3 5-4 8-2l4 4 4-4c3-2 6-1 8 2 4 6 0 12-12 20z" fill="var(--fire)" opacity=".15" stroke="var(--fire)" stroke-width="1.2"/>
+  <!-- Plus sign (medical) -->
+  <rect x="17" y="14" width="6" height="14" rx="1.5" fill="var(--fire)" opacity=".3"/>
+  <rect x="13" y="18" width="14" height="6" rx="1.5" fill="var(--fire)" opacity=".3"/>
+</svg>`;
+const ICON_TIP = `<svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+  <!-- Light bulb -->
+  <circle cx="10" cy="9" r="6" fill="var(--earth)" opacity=".12" stroke="var(--earth)" stroke-width="1" opacity=".5"/>
+  <path d="M8 14h4M8.5 15.5h3" stroke="var(--earth)" stroke-width="1" stroke-linecap="round" opacity=".4"/>
+  <path d="M10 4v1M5 9H4M16 9h-1M6.5 5.5l.7.7M13.5 5.5l-.7.7" stroke="var(--earth)" stroke-width=".8" stroke-linecap="round" opacity=".35"/>
+  <circle cx="10" cy="9" r="2" fill="var(--earth)" opacity=".2"/>
+</svg>`;
+
+// ===== QUESTIONS (v3: Q3 with picky option, Q9 reworded) =====
+const QS = [
+  {
+    q:'遇到陌生人或陌生動物時，牠通常會？',
+    hint:'可以選擇所有符合的描述',cat:'personality',cl:'個性行為',
+    opts:[
+      {t:'衝上前去、想主導局面',s:[3,1,0,0,0]},
+      {t:'超興奮、搖尾巴想互動',s:[1,3,0,0,0]},
+      {t:'慢慢靠近、友善但不急',s:[0,1,3,0,0]},
+      {t:'冷靜觀察、保持距離',s:[0,0,0,3,1]},
+      {t:'躲到後面或想逃走',s:[0,0,0,1,3]}
+    ]
+  },
+  {
+    q:'在家的日常狀態？',
+    hint:'可複選，牠可能在不同時候有不同表現',cat:'personality',cl:'個性行為',
+    opts:[
+      {t:'動來動去、閒不下來',s:[3,1,0,0,0]},
+      {t:'到處黏人、愛撒嬌',s:[0,3,1,0,0]},
+      {t:'大部分時間躺著放鬆',s:[0,0,3,0,1]},
+      {t:'有固定位置、不喜歡被打擾',s:[0,0,0,3,0]},
+      {t:'安靜窩在角落觀察一切',s:[0,0,0,1,3]}
+    ]
+  },
+  {
+    q:'吃東西時的態度？',
+    hint:'可複選',cat:'personality',cl:'個性行為',
+    opts:[
+      {t:'搶第一口、吃很快、很急',s:[3,0,0,0,0]},
+      {t:'看到碗就超期待、很興奮',s:[0,3,1,0,0]},
+      {t:'什麼都吃、好養得很',s:[0,0,3,0,0]},
+      {t:'定時定量、有自己的節奏',s:[0,0,0,3,0]},
+      {t:'挑食，喜歡的超愛、不愛的碰都不碰',s:[3,0,0,1,0]},
+      {t:'小心翼翼、會先聞很久才決定吃不吃',s:[0,0,0,0,3]}
+    ]
+  },
+  {
+    q:'跟其他毛孩相處時的模式？',
+    hint:'可複選',cat:'personality',cl:'個性行為',
+    opts:[
+      {t:'想當老大、主導遊戲',s:[3,0,0,1,0]},
+      {t:'愛一起玩鬧、很嗨',s:[1,3,0,0,0]},
+      {t:'溫柔包容、會照顧別人',s:[0,0,3,0,1]},
+      {t:'各玩各的、互不干擾',s:[1,0,0,3,0]},
+      {t:'膽怯迴避、寧可躲開',s:[0,0,1,0,3]}
+    ]
+  },
+  {
+    q:'面對壓力（打雷、看醫生、環境改變）的反應？',
+    hint:'可複選，壓力反應可能不只一種',cat:'personality',cl:'個性行為',
+    opts:[
+      {t:'暴躁、吠叫、想掙脫',s:[3,1,0,0,0]},
+      {t:'焦慮不安、一直叫一直動',s:[0,3,0,0,1]},
+      {t:'默默承受、不太有反應',s:[0,0,3,1,0]},
+      {t:'嘆氣、皮膚起反應',s:[1,0,0,3,0]},
+      {t:'發抖、躲藏、想逃跑',s:[0,0,0,0,3]}
+    ]
+  },
+  {
+    q:'牠的運動風格？',
+    hint:'可複選',cat:'personality',cl:'個性行為',
+    opts:[
+      {t:'爆發力強、衝很快',s:[3,1,0,0,0]},
+      {t:'短距離很猛但容易累',s:[0,3,0,0,0]},
+      {t:'穩定耐走、不急不慢',s:[0,0,3,0,1]},
+      {t:'不太主動、但走起來很有紀律',s:[0,0,1,3,0]},
+      {t:'不愛動、偶爾走走看看',s:[0,0,0,1,3]}
+    ]
+  },
+  {
+    q:'整體體型最接近？',
+    hint:'可複選，有些毛孩介於兩種之間',cat:'physical',cl:'體型外觀',
+    opts:[
+      {t:'偏瘦、靈活結實',s:[3,0,0,0,1]},
+      {t:'壯碩有力、肌肉感',s:[1,3,0,0,0]},
+      {t:'圓潤、矮胖、軟嘟嘟',s:[0,0,3,0,0]},
+      {t:'勻稱、胸寬、毛量多',s:[0,0,0,3,0]},
+      {t:'中等偏瘦、骨架明顯',s:[0,0,0,0,3]}
+    ]
+  },
+  {
+    q:'皮膚毛髮狀態和溫度偏好？',
+    hint:'可複選，想想牠平常的樣子',cat:'physical',cl:'體型外觀',
+    opts:[
+      {t:'毛量普通但眼睛特別有神、有光',s:[3,0,0,0,0]},
+      {t:'皮膚容易泛紅、摸起來偏熱、怕熱愛趴涼地',s:[0,3,0,0,1]},
+      {t:'皮膚偏厚、容易發胖、冷熱都不太挑',s:[0,0,3,0,0]},
+      {t:'毛量豐厚、毛質有光澤、皮膚狀態好',s:[0,0,0,3,1]},
+      {t:'怕冷、愛窩暖處、四肢摸起來偏涼',s:[0,0,0,0,3]}
+    ]
+  },
+  {
+    q:'牠比較容易出現的狀況？',
+    hint:'可複選，可能有不只一種傾向',cat:'health',cl:'健康傾向',
+    opts:[
+      {t:'眼睛問題、皮膚過敏、指尖炎或常舔腳',s:[3,0,0,0,0]},
+      {t:'心臟問題、過度興奮、分離焦慮',s:[0,3,0,0,0]},
+      {t:'腸胃不好、容易軟便或嘔吐',s:[0,0,3,0,0]},
+      {t:'呼吸道問題、皮膚乾燥、咳喘',s:[0,0,0,3,0]},
+      {t:'關節退化、泌尿問題、腰背無力',s:[0,0,0,0,3]}
+    ]
+  },
+  {
+    q:'哪個季節牠的狀態最不穩定？',
+    hint:'可複選',cat:'health',cl:'健康傾向',
+    opts:[
+      {t:'春天（容易過敏、煩躁）',s:[3,0,0,0,0]},
+      {t:'夏天（太興奮、容易中暑）',s:[0,3,0,0,0]},
+      {t:'換季（梅雨、長夏，腸胃不舒服）',s:[0,0,3,0,0]},
+      {t:'秋天（乾咳、皮膚乾）',s:[0,0,0,3,0]},
+      {t:'冬天（懶洋洋、怕冷、關節僵硬）',s:[0,0,0,0,3]},
+      {t:'沒有特別明顯',s:[0,0,0,0,0]}
+    ]
+  }
+];
+
+// ===== STATE =====
+let cq = 0, ans = [], petName = '', petSp = 'dog', petPhoto = null;
+
+// Handle photo upload — crop to square to prevent distortion
+function handlePhoto(input){
+  const file = input.files[0];
+  if(!file) return;
+  const reader = new FileReader();
+  reader.onload = function(e){
+    const img = new Image();
+    img.onload = function(){
+      // Crop to center square
+      const s = Math.min(img.width, img.height);
+      const sx = (img.width - s) / 2;
+      const sy = (img.height - s) / 2;
+      const c = document.createElement('canvas');
+      const sz = 400; // output resolution
+      c.width = sz; c.height = sz;
+      const ctx = c.getContext('2d');
+      ctx.drawImage(img, sx, sy, s, s, 0, 0, sz, sz);
+      petPhoto = c.toDataURL('image/jpeg', 0.85);
+      const btn = document.getElementById('photo-btn');
+      btn.classList.add('has-photo');
+      btn.innerHTML = `<img src="${petPhoto}" alt="寵物照片">`;
+    };
+    img.src = e.target.result;
+  };
+  reader.readAsDataURL(file);
+}
+
+// Build watercolor ring SVG for photo frame
+function wcRingSvg(c, size){
+  const r = size/2;
+  return `<svg class="wc-ring" width="${size}" height="${size}" viewBox="0 0 ${size} ${size}">
+    <defs>
+      <radialGradient id="wcg-${size}" cx="50%" cy="50%" r="50%">
+        <stop offset="60%" stop-color="${c}" stop-opacity="0"/>
+        <stop offset="75%" stop-color="${c}" stop-opacity=".18"/>
+        <stop offset="85%" stop-color="${c}" stop-opacity=".12"/>
+        <stop offset="95%" stop-color="${c}" stop-opacity=".06"/>
+        <stop offset="100%" stop-color="${c}" stop-opacity="0"/>
+      </radialGradient>
+    </defs>
+    <circle cx="${r}" cy="${r}" r="${r}" fill="url(#wcg-${size})"/>
+    <circle cx="${r}" cy="${r}" r="${r-3}" fill="none" stroke="${c}" stroke-width="1.5" opacity=".15"/>
+    <circle cx="${r}" cy="${r}" r="${r-6}" fill="none" stroke="${c}" stroke-width=".8" opacity=".08"/>
+  </svg>`;
+}
+
+function initAns(){ ans = QS.map(() => []) }
+
+// Render five-element icons on intro
+function renderFiveRow(){
+  document.getElementById('five-row').innerHTML = ELEMENTS.map((e,i) =>
+    `<div class="five-item">
+      <div class="five-circle" style="background:${EL_SOFTS[i]}">
+        <div class="el-icon" style="width:28px;height:28px">${EL_SVGS[EL_KEYS[i]]}</div>
+      </div>
+      <div class="five-label">${e}</div>
+    </div>`
+  ).join('');
+}
+renderFiveRow();
+
+function setSp(sp){
+  petSp = sp;
+  document.getElementById('sp-dog').classList.toggle('active', sp==='dog');
+  document.getElementById('sp-cat').classList.toggle('active', sp==='cat');
+}
+
+function startQuiz(){
+  petName = document.getElementById('pet-name').value.trim() || '毛孩';
+  document.getElementById('intro-page').classList.add('hidden');
+  document.getElementById('quiz-page').classList.remove('hidden');
+  cq = 0; initAns(); renderQ();
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+function renderQ(){
+  const q = QS[cq];
+  const cc = q.cat==='personality'?'qc-p':q.cat==='physical'?'qc-b':'qc-h';
+  const pc = {personality:'var(--wood)',physical:'var(--earth)',health:'var(--water)'};
+  document.getElementById('p-text').textContent = `第 ${cq+1} 題 / 共 ${QS.length} 題`;
+  document.getElementById('p-cat').textContent = q.cl;
+  const f = document.getElementById('p-fill');
+  f.style.width = `${((cq+1)/QS.length)*100}%`;
+  f.style.background = pc[q.cat];
+
+  const sel = ans[cq]||[];
+  const oh = q.opts.map((o,i) => {
+    const on = sel.includes(i) ? ' on' : '';
+    return `<button class="opt${on}" onclick="tog(${cq},${i})"><span class="ck"></span><span>${o.t}</span></button>`;
+  }).join('');
+
+  document.getElementById('q-area').innerHTML = `
+    <div class="card" style="margin-bottom:14px">
+      <div class="q-num">Q${cq+1}</div>
+      <span class="q-cat ${cc}">${q.cl}</span>
+      <div class="q-text">${q.q}</div>
+      <div class="q-hint">${q.hint}</div>
+      <div class="opts">${oh}</div>
+    </div>
+    <div class="btn-row">
+      ${cq>0?'<button class="btn bs" onclick="prev()">← 上一題</button>':''}
+      <button class="btn bp" id="nb" onclick="next()" ${sel.length===0?'disabled':''}>${cq===QS.length-1?'查看結果 ✨':'下一題 →'}</button>
+    </div>`;
+}
+
+function tog(qi,oi){
+  const a=ans[qi],x=a.indexOf(oi);
+  x>=0?a.splice(x,1):a.push(oi);
+  // Only update option states, don't rebuild card (prevents flicker)
+  const opts=document.querySelectorAll('.opt');
+  opts.forEach((el,i)=>{
+    if(a.includes(i)){el.classList.add('on')}else{el.classList.remove('on')}
+  });
+  // Update next button disabled state
+  const nb=document.getElementById('nb');
+  if(nb) nb.disabled = a.length===0;
+}
+function next(){ cq<QS.length-1?(cq++,renderQ()):showResult() }
+function prev(){ cq>0&&(cq--,renderQ()) }
+
+// ===== SCORING =====
+function calc(){
+  let s=[0,0,0,0,0];
+  QS.forEach((q,i)=>(ans[i]||[]).forEach(oi=>q.opts[oi].s.forEach((v,j)=>{s[j]+=v})));
+  return s;
+}
+function pcts(s){ const t=s.reduce((a,b)=>a+b,0)||1; return s.map(v=>Math.round(v/t*100)) }
+function getType(p){
+  const sorted=p.map((v,i)=>({v,i})).sort((a,b)=>b.v-a.v);
+  const pr=sorted[0],se=sorted[1];
+  if(pr.v-se.v<=5){
+    const k=ELEMENTS[pr.i]+ELEMENTS[se.i];
+    return{pi:pr.i,si:se.i,mix:true,label:`${ELEMENTS[pr.i]}${ELEMENTS[se.i]}型`,nick:MIX_NICKS[k]||EL_NICKS[pr.i]};
+  }
+  return{pi:pr.i,si:se.v>=20?se.i:null,mix:false,label:`${ELEMENTS[pr.i]}型`,nick:EL_NICKS[pr.i]};
+}
+
+// ===== RESULT =====
+function showResult(){
+  document.getElementById('quiz-page').classList.add('hidden');
+  const rp=document.getElementById('result-page');
+  rp.classList.remove('hidden');
+  window.scrollTo({top:0,behavior:'smooth'});
+  const sc=calc(), pc=pcts(sc), r=getType(pc);
+  const pi=r.pi, c=EL_COLORS[pi], ek=EL_KEYS[pi];
+
+  let desc=PERS_DESC[ELEMENTS[pi]];
+  if(r.mix&&r.si!==null) desc+=`\n\n同時也帶有${ELEMENTS[r.si]}型的特質——`+PERS_DESC[ELEMENTS[r.si]].split('。')[0]+'。';
+  let tgs=[...TRAIT_TAGS[ELEMENTS[pi]]];
+  if(r.mix&&r.si!==null) tgs=tgs.concat(TRAIT_TAGS[ELEMENTS[r.si]].slice(0,2));
+
+  // Avatar: uploaded photo with watercolor ring, or fallback emoji
+  const avatarHtml = petPhoto
+    ? `<div class="pet-photo-frame">
+        ${wcRingSvg(c, 100)}
+        <img class="photo-circle" src="${petPhoto}" alt="${petName}">
+      </div>`
+    : `<div class="r-avatar" style="background:${c}15">
+        <span style="font-size:36px;color:${c};font-weight:700">${petSp==='cat'?'🐱':'🐶'}</span>
+        <style>.r-avatar::after{border-color:${c}!important}</style>
+      </div>`;
+
+  rp.innerHTML = `<div class="rp">
+    <div class="r-head">
+      ${avatarHtml}
+      <div class="r-name">${petName}</div>
+      <div class="r-label">── Analysis Result ──</div>
+      <div class="r-badge" style="background:${c}15;color:${c}">
+        <span class="el-icon" style="width:24px;height:24px">${EL_SVGS[ek]}</span> ${r.label}
+      </div>
+      <div class="r-nick" style="color:${c}">${r.nick}</div>
+      ${r.si!==null&&!r.mix?`<div class="r-sub">副型：${ELEMENTS[r.si]}型 ${EL_NICKS[r.si]}</div>`:''}
+    </div>
+
+    <div class="chart-card">
+      <h3>五行體質比例</h3>
+      <div class="chart-wrap"><canvas id="radar"></canvas></div>
+      <div class="pct-bars" id="pct-bars"></div>
+    </div>
+
+    <div class="pers-card">
+      <div class="sec-title"><span class="el-icon" style="width:20px;height:20px">${EL_SVGS[ek]}</span> 性格總結</div>
+      <div class="sec-line"></div>
+      <div class="pers-desc">${desc.replace(/\n/g,'<br>')}</div>
+      <div class="tags">${tgs.map((t,idx)=>{const ci=idx<5?pi:r.si;return`<span class="tag" style="background:${EL_COLORS[ci]}12;color:${EL_COLORS[ci]}">${t}</span>`}).join('')}</div>
+    </div>
+
+    <div class="adv-grid">
+      <div class="adv-card">
+        <div class="adv-icon">${ICON_FOOD}</div>
+        <h4>飲食建議</h4>
+        <p>${FOOD[ELEMENTS[pi]]}</p>
+      </div>
+      <div class="adv-card">
+        <div class="adv-icon">${ICON_CARE}</div>
+        <h4>生活照護</h4>
+        <p>${CARE[ELEMENTS[pi]]}</p>
+      </div>
+    </div>
+
+    <div class="tip-card">
+      <strong>${ICON_TIP} Dr. Chiu Chiu 小提醒</strong><br><br>
+      ${ELEMENTS[pi]}型毛孩在<strong>${SEASON[ELEMENTS[pi]]}</strong>時特別需要留意身體狀態。平時多觀察牠的精神、食慾和排便，就是最好的日常保養唷！
+    </div>
+
+    <div class="cta-card">
+      <p>想更深入了解牠的體質嗎？<br>歡迎預約中獸醫體質諮詢<br>或加入社群一起討論</p>
+      <div class="btn-row">
+        <button class="btn bp" onclick="genShareCard()">分享結果</button>
+        <button class="btn bs" onclick="restart()">再測一次</button>
+      </div>
+    </div>
+
+    <!-- Share card overlay -->
+    <div class="share-overlay hidden" id="share-overlay" onclick="closeShare(event)">
+      <div class="share-modal">
+        <div class="share-hint">長按圖片儲存，或截圖分享到 IG Story / LINE</div>
+        <div id="share-img-wrap"></div>
+        <div class="btn-row" style="margin-top:12px;padding:0 10px">
+          <button class="btn bp" onclick="doNativeShare()">傳送分享</button>
+          <button class="btn bs" onclick="closeShare()">關閉</button>
+        </div>
+      </div>
+    </div>
+  </div>`;
+
+  setTimeout(()=>renderRadar(pc,pi),120);
+  renderBars(pc);
+}
+
+// ===== CUSTOM PENTAGON RADAR WITH WATERCOLOR FILL =====
+function drawPentagon(ctx, cx, cy, r, startAngle){
+  const pts=[];
+  for(let i=0;i<5;i++){
+    const a = startAngle + (Math.PI*2/5)*i;
+    pts.push({x:cx+r*Math.cos(a), y:cy+r*Math.sin(a)});
+  }
+  return pts;
+}
+
+function renderRadar(pc, pi){
+  const canvas = document.getElementById('radar');
+  const dpr = window.devicePixelRatio||1;
+  const size = 310;
+  canvas.width = size*dpr;
+  canvas.height = size*dpr;
+  canvas.style.width = size+'px';
+  canvas.style.height = size+'px';
+  const ctx = canvas.getContext('2d');
+  ctx.scale(dpr,dpr);
+  _drawPentagonChart(ctx, size, pc, pi, false);
+}
+
+// Personality keywords for each element (short, for chart labels)
+const EL_PERSONALITY = ['活躍 冒險','熱情 忠誠','平靜 耐心','獨立 有條理','謹慎 警覺'];
+const EL_PERSONALITY_EN = ['Active','Passionate','Calm','Independent','Cautious'];
+
+function _drawPentagonChart(ctx, size, pc, pi, mini){
+  const cx=size/2, cy=size/2;
+  const R = mini ? size*0.30 : size*0.30;
+  const startAngle = -Math.PI/2; // 木 at top
+  const maxVal = Math.max(...pc, 35);
+  const labelDist = mini ? 22 : 38;
+
+  const outerPts = drawPentagon(ctx,cx,cy,R,startAngle);
+
+  // Data polygon vertices
+  const dataPts=[];
+  for(let i=0;i<5;i++){
+    const a = startAngle + (Math.PI*2/5)*i;
+    const ratio = pc[i]/maxVal;
+    const r = R*Math.max(ratio, 0.08);
+    dataPts.push({x:cx+r*Math.cos(a), y:cy+r*Math.sin(a)});
+  }
+
+  // ===== SECTOR-BASED COLORING (like the Banana render) =====
+  // Each triangle sector center→vertex[i]→vertex[i+1] gets its own element color
+  // The color is blended from the two adjacent elements
+
+  // Layer 1: Fill each sector of the OUTER pentagon with its element color (base tint)
+  for(let i=0;i<5;i++){
+    const ni=(i+1)%5;
+    // Midpoint of the edge between vertex i and i+1
+    const mx=(outerPts[i].x+outerPts[ni].x)/2;
+    const my=(outerPts[i].y+outerPts[ni].y)/2;
+
+    ctx.save();
+    // Clip to this sector triangle: center → vertex i → vertex i+1
+    ctx.beginPath();
+    ctx.moveTo(cx,cy);
+    ctx.lineTo(outerPts[i].x,outerPts[i].y);
+    ctx.lineTo(outerPts[ni].x,outerPts[ni].y);
+    ctx.closePath();
+    ctx.clip();
+
+    // Gradient from center outward toward vertex i — this sector's color
+    const col = EL_COLORS[i];
+    const grad = ctx.createRadialGradient(cx,cy,R*0.05, outerPts[i].x,outerPts[i].y, R*0.95);
+    grad.addColorStop(0, col+hexAlpha(0.08));
+    grad.addColorStop(0.3, col+hexAlpha(0.22));
+    grad.addColorStop(0.6, col+hexAlpha(0.32));
+    grad.addColorStop(0.85, col+hexAlpha(0.18));
+    grad.addColorStop(1, col+hexAlpha(0.10));
+    ctx.fillStyle=grad;
+    ctx.fillRect(0,0,size,size);
+
+    // Second pass: adjacent element bleed near the shared edge
+    const col2 = EL_COLORS[ni];
+    const grad2 = ctx.createRadialGradient(cx,cy,R*0.05, outerPts[ni].x,outerPts[ni].y, R*0.95);
+    grad2.addColorStop(0, col2+hexAlpha(0.05));
+    grad2.addColorStop(0.3, col2+hexAlpha(0.12));
+    grad2.addColorStop(0.65, col2+hexAlpha(0.18));
+    grad2.addColorStop(0.9, col2+hexAlpha(0.10));
+    grad2.addColorStop(1, col2+hexAlpha(0.05));
+    ctx.fillStyle=grad2;
+    ctx.fillRect(0,0,size,size);
+
+    ctx.restore();
+  }
+
+  // Layer 2: Data polygon — each sector filled with its element color, intensity by score
+  for(let i=0;i<5;i++){
+    const ni=(i+1)%5;
+    const intensity = pc[i]/maxVal;
+
+    ctx.save();
+    // Clip to data sector: center → dataPt[i] → dataPt[i+1]
+    ctx.beginPath();
+    ctx.moveTo(cx,cy);
+    ctx.lineTo(dataPts[i].x,dataPts[i].y);
+    ctx.lineTo(dataPts[ni].x,dataPts[ni].y);
+    ctx.closePath();
+    ctx.clip();
+
+    const col = EL_COLORS[i];
+    // Strong fill — proportional to score
+    const baseA = 0.20 + intensity*0.45;
+    const grad = ctx.createRadialGradient(cx,cy,0, dataPts[i].x,dataPts[i].y, R*0.9);
+    grad.addColorStop(0, col+hexAlpha(baseA*0.3));
+    grad.addColorStop(0.3, col+hexAlpha(baseA*0.9));
+    grad.addColorStop(0.6, col+hexAlpha(baseA*0.7));
+    grad.addColorStop(1, col+hexAlpha(baseA*0.3));
+    ctx.fillStyle=grad;
+    ctx.fillRect(0,0,size,size);
+
+    // Adjacent color bleed
+    const col2 = EL_COLORS[ni];
+    const int2 = pc[ni]/maxVal;
+    const baseA2 = 0.10 + int2*0.25;
+    const grad2 = ctx.createRadialGradient(cx,cy,0, dataPts[ni].x,dataPts[ni].y, R*0.8);
+    grad2.addColorStop(0, col2+hexAlpha(baseA2*0.2));
+    grad2.addColorStop(0.4, col2+hexAlpha(baseA2*0.6));
+    grad2.addColorStop(0.8, col2+hexAlpha(baseA2*0.3));
+    grad2.addColorStop(1, col2+'00');
+    ctx.fillStyle=grad2;
+    ctx.fillRect(0,0,size,size);
+
+    ctx.restore();
+  }
+
+  // Grid pentagons (over the color fill, subtle)
+  for(let lv=1;lv<=5;lv++){
+    const r = R*(lv/5);
+    const pts = drawPentagon(ctx,cx,cy,r,startAngle);
+    ctx.beginPath();
+    ctx.moveTo(pts[0].x,pts[0].y);
+    for(let i=1;i<5;i++) ctx.lineTo(pts[i].x,pts[i].y);
+    ctx.closePath();
+    ctx.strokeStyle = lv===5 ? 'rgba(255,255,255,0.5)' : 'rgba(255,255,255,0.25)';
+    ctx.lineWidth = lv===5 ? 1.2 : 0.6;
+    ctx.stroke();
+  }
+  // Axis lines (white, over color)
+  for(let i=0;i<5;i++){
+    ctx.beginPath();
+    ctx.moveTo(cx,cy);
+    ctx.lineTo(outerPts[i].x,outerPts[i].y);
+    ctx.strokeStyle='rgba(255,255,255,0.2)';
+    ctx.lineWidth=0.6;
+    ctx.stroke();
+  }
+
+  // Layer 3: Data polygon outline — multi-segment colored
+  for(let i=0;i<5;i++){
+    const ni=(i+1)%5;
+    ctx.beginPath();
+    ctx.moveTo(dataPts[i].x,dataPts[i].y);
+    ctx.lineTo(dataPts[ni].x,dataPts[ni].y);
+    ctx.strokeStyle=EL_COLORS[i]+'CC';
+    ctx.lineWidth=1.8;
+    ctx.stroke();
+  }
+
+  // Vertex dots
+  for(let i=0;i<5;i++){
+    ctx.beginPath();
+    ctx.arc(dataPts[i].x,dataPts[i].y, mini?3.5:5.5, 0, Math.PI*2);
+    ctx.fillStyle=EL_COLORS[i];
+    ctx.fill();
+    ctx.strokeStyle='#fff';
+    ctx.lineWidth= mini?1.5:2.5;
+    ctx.stroke();
+  }
+
+  // ---- LABELS with personality traits ----
+  ctx.textAlign='center';
+  ctx.textBaseline='middle';
+  for(let i=0;i<5;i++){
+    const a=startAngle+(Math.PI*2/5)*i;
+    const lx=cx+(R+labelDist)*Math.cos(a);
+    const ly=cy+(R+labelDist)*Math.sin(a);
+
+    // Element character — bold, colored
+    ctx.font= mini ? '600 13px "Noto Sans TC"' : 'bold 18px "Noto Sans TC"';
+    ctx.fillStyle=EL_COLORS[i];
+    ctx.fillText(ELEMENTS[i], lx, ly-(mini?10:14));
+
+    // Percentage
+    ctx.font= mini ? '500 9px "Playfair Display"' : '500 13px "Playfair Display"';
+    ctx.fillStyle='#6A5D4F';
+    ctx.fillText(pc[i]+'%', lx, ly+(mini?1:0));
+
+    if(!mini){
+      // Personality trait (Chinese)
+      ctx.font='300 10px "Noto Sans TC"';
+      ctx.fillStyle='#8A7B6B';
+      ctx.fillText(EL_PERSONALITY[i], lx, ly+14);
+      // English personality keyword
+      ctx.font='italic 300 9px "Playfair Display"';
+      ctx.fillStyle='#B5A898';
+      ctx.fillText(EL_PERSONALITY_EN[i], lx, ly+26);
+    }
+  }
+}
+
+// Helper: convert 0-1 alpha to 2-char hex
+function hexAlpha(a){
+  return Math.round(Math.min(1,Math.max(0,a))*255).toString(16).padStart(2,'0');
+}
+
+function renderBars(pc){
+  const el=document.getElementById('pct-bars');
+  const sorted=pc.map((p,i)=>({p,i})).sort((a,b)=>b.p-a.p);
+  el.innerHTML=sorted.map(({p,i})=>`
+    <div class="pct-row">
+      <span class="pct-lbl" style="color:${EL_COLORS[i]}">
+        <span class="el-icon" style="width:14px;height:14px">${EL_SVGS[EL_KEYS[i]]}</span>${ELEMENTS[i]}
+      </span>
+      <div class="pct-bg"><div class="pct-fill" style="width:${p}%;background:${EL_COLORS[i]}"></div></div>
+      <span class="pct-val">${p}%</span>
+    </div>`).join('');
+}
+
+// ===== SHARE CARD =====
+let shareData = {};
+
+function genShareCard(){
+  const sc=calc(), pc=pcts(sc), r=getType(pc);
+  const pi=r.pi, c=EL_COLORS[pi], ek=EL_KEYS[pi];
+  // Share card photo or fallback
+  const scPhotoHtml = petPhoto
+    ? `<div class="sc-photo-frame">
+        ${wcRingSvg(c, 74)}
+        <img class="photo-circle" src="${petPhoto}" alt="${petName}">
+      </div>`
+    : `<div class="sc-avatar" style="background:${c}15">
+        <span style="font-size:26px">${petSp==='cat'?'🐱':'🐶'}</span>
+      </div>`;
+
+  let tgs=[...TRAIT_TAGS[ELEMENTS[pi]].slice(0,3)];
+  if(r.mix&&r.si!==null) tgs.push(TRAIT_TAGS[ELEMENTS[r.si]][0]);
+
+  // Build share card HTML
+  const wrap = document.getElementById('share-img-wrap');
+  wrap.innerHTML = `
+    <div class="share-card" id="share-card-el">
+      <div class="sc-inner">
+        <div class="sc-title">毛孩五行體質分析</div>
+        <div class="sc-sub">Five Element Constitution Analysis</div>
+        <div class="sc-brand">By Dr. Chiu Chiu</div>
+        <div class="sc-divider"></div>
+        ${scPhotoHtml}
+        <div class="sc-name">${petName}</div>
+        <div class="sc-result-label">分析結果</div>
+        <div class="sc-badge" style="background:${c}15;color:${c}">
+          <span class="el-icon" style="width:18px;height:18px;display:inline-block;vertical-align:middle">${EL_SVGS[ek]}</span>
+          ${r.label}
+        </div>
+        <div class="sc-nick" style="color:${c}">${r.nick}</div>
+        <div class="sc-chart-wrap"><canvas id="share-radar"></canvas></div>
+        <div class="sc-tags">
+          ${tgs.map(t=>`<span class="sc-tag" style="background:${c}12;color:${c}">${t}</span>`).join('')}
+        </div>
+        <div class="sc-divider"></div>
+        <div class="sc-footer">
+          <strong>想更深入了解牠的體質嗎？</strong><br>
+          歡迎預約中獸醫體質諮詢<br>或加入社群一起討論 🐾
+        </div>
+      </div>
+    </div>
+  `;
+
+  document.getElementById('share-overlay').classList.remove('hidden');
+
+  // Draw mini pentagon radar
+  setTimeout(()=>{
+    const miniCanvas = document.getElementById('share-radar');
+    const dpr2 = window.devicePixelRatio||1;
+    const mSize = 180;
+    miniCanvas.width = mSize*dpr2;
+    miniCanvas.height = mSize*dpr2;
+    miniCanvas.style.width = mSize+'px';
+    miniCanvas.style.height = mSize+'px';
+    const mctx = miniCanvas.getContext('2d');
+    mctx.scale(dpr2,dpr2);
+    _drawPentagonChart(mctx, mSize, pc, pi, true);
+
+    // After chart renders, convert to image
+    setTimeout(()=>{
+      const el = document.getElementById('share-card-el');
+      html2canvas(el,{
+        backgroundColor:'#FAF8F4',
+        scale:2,
+        useCORS:true,
+        logging:false
+      }).then(canvas=>{
+        const img = canvas.toDataURL('image/png');
+        shareData = {img, type:r.label, name:petName};
+        // Replace card with image for easy save
+        wrap.innerHTML = `<img src="${img}" class="share-img" alt="${petName} 五行體質分析結果">`;
+      }).catch(()=>{
+        // If html2canvas fails, keep the card as-is
+      });
+    }, 400);
+  }, 100);
+}
+
+function closeShare(e){
+  if(e && e.target !== e.currentTarget) return;
+  document.getElementById('share-overlay').classList.add('hidden');
+}
+
+async function doNativeShare(){
+  if(shareData.img && navigator.share && navigator.canShare){
+    try{
+      const resp = await fetch(shareData.img);
+      const blob = await resp.blob();
+      const file = new File([blob],`${shareData.name}_五行體質.png`,{type:'image/png'});
+      if(navigator.canShare({files:[file]})){
+        await navigator.share({
+          title:`${shareData.name} 的五行體質分析`,
+          text:`${shareData.name} 是${shareData.type}！快來測測你家毛孩的五行體質 🐾`,
+          files:[file]
+        });
+        return;
+      }
+    }catch(e){}
+  }
+  // Fallback: download image
+  if(shareData.img){
+    const a=document.createElement('a');
+    a.href=shareData.img;
+    a.download=`${petName}_五行體質分析.png`;
+    a.click();
+  } else {
+    alert('請長按圖片儲存後分享唷！');
+  }
+}
+
+function restart(){
+  document.getElementById('result-page').classList.add('hidden');
+  document.getElementById('result-page').innerHTML='';
+  document.getElementById('intro-page').classList.remove('hidden');
+  cq=0;initAns();
+  // Reset photo upload button
+  petPhoto=null;
+  const btn=document.getElementById('photo-btn');
+  if(btn){btn.classList.remove('has-photo');btn.innerHTML='<span class="ph-icon">+</span><span class="ph-text">上傳</span>';}
+  const inp=document.getElementById('photo-input');
+  if(inp) inp.value='';
+}
+</script>
+</body>
+</html>
