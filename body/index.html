@@ -1,0 +1,1557 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>毛孩體質觀察指南 | 拾貳寵動物醫院</title>
+<meta name="description" content="12 個簡單問題，幫你觀察毛孩的體質傾向。拾貳寵動物醫院 — 中獸醫門診">
+
+<!-- Fonts & Libs -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700;900&family=Playfair+Display:ital,wght@0,400;0,600;1,400&display=swap">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+
+<style>
+:root {
+  --bg: #F5F7F5;
+  --text: #1A2E1A;
+  --text-light: #4A5F4A;
+  --text-muted: #8A9A8A;
+  --btn: #7A8E76;
+  --btn-hover: #637360;
+  --card: rgba(255,255,252,0.72);
+  --border: #E5DDD3;
+  --shadow: rgba(74,61,51,0.04);
+  --accent: #D2B168;
+  /* Axis colors */
+  --ax-vitality: #E8A84C;
+  --ax-body: #7A9970;
+  --ax-metabolism: #7A9DAB;
+  --ax-accum: #9A7A9D;
+  --cold: #7A9DAB;
+  --hot: #BF7565;
+  --warn: #C4883A;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
+body{
+  font-family:'Noto Sans TC',sans-serif;background:var(--bg);color:var(--text);
+  min-height:100vh;overflow-x:hidden;-webkit-font-smoothing:antialiased;
+}
+a,button,input,select{-webkit-tap-highlight-color:transparent}
+
+/* BG blobs */
+.bg-layer{position:fixed;inset:0;pointer-events:none;z-index:0;overflow:hidden}
+.bg-blob{position:absolute;border-radius:50%;filter:blur(90px)}
+.bb1{width:340px;height:340px;top:-100px;right:-80px;background:var(--ax-vitality);opacity:.08}
+.bb2{width:280px;height:280px;bottom:5%;left:-100px;background:var(--ax-metabolism);opacity:.06}
+.bb3{width:220px;height:220px;top:35%;right:-50px;background:var(--ax-body);opacity:.05}
+
+/* Leaf SVG */
+.leaf-r{position:fixed;top:20px;right:-5px;width:110px;opacity:.14;pointer-events:none;z-index:0}
+.leaf-l{position:fixed;bottom:40px;left:-15px;width:90px;opacity:.09;pointer-events:none;z-index:0;transform:scaleX(-1) rotate(10deg)}
+
+.container{max-width:420px;margin:0 auto;padding:16px 18px 50px;position:relative;z-index:1}
+.footer{text-align:center;padding:30px 0 16px;font-size:10px;color:var(--text-muted);letter-spacing:1px;font-family:'Playfair Display',serif;font-style:italic}
+
+/* Header */
+.header{text-align:center;padding:26px 0 10px}
+.header h1{font-size:22px;font-weight:900;letter-spacing:4px;color:var(--text);line-height:1.3}
+.header .sub{font-family:'Playfair Display',serif;font-size:11.5px;color:var(--text-muted);margin-top:5px;letter-spacing:2.5px;font-style:italic}
+.header .brand{font-family:'Playfair Display',serif;font-size:11px;color:var(--btn);margin-top:10px;letter-spacing:2px}
+.h-line{width:36px;height:1px;background:var(--border);margin:12px auto 0}
+
+/* Progress */
+.progress-wrap{margin:14px 0 20px}
+.progress-label{display:flex;justify-content:space-between;font-size:11px;color:var(--text-muted);margin-bottom:5px}
+.progress-bar{width:100%;height:3px;background:var(--border);border-radius:2px;overflow:hidden}
+.progress-fill{height:100%;border-radius:2px;transition:width .5s;background:var(--btn)}
+
+/* Card */
+.card{
+  background:var(--card);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);
+  border:1px solid rgba(229,221,211,.55);border-radius:22px;
+  padding:26px 20px;box-shadow:0 6px 28px var(--shadow);animation:fadeUp .4s ease;
+}
+@keyframes fadeUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
+
+.q-num{font-family:'Playfair Display',serif;font-size:13px;color:var(--text-muted);margin-bottom:5px}
+.q-cat{display:inline-block;font-size:10px;padding:3px 12px;border-radius:10px;margin-bottom:14px;font-weight:500;letter-spacing:.5px}
+.qc-e{background:#FDF3E0;color:#8A6A2A}
+.qc-s{background:#E8F0E5;color:#4A7040}
+.qc-m{background:#E3EEF2;color:#4A7A88}
+.qc-l{background:#F0E8F2;color:#6A4A6D}
+.qc-t{background:#FCE8E3;color:#8A4A3A}
+.q-text{font-size:17px;font-weight:500;line-height:1.7;margin-bottom:6px}
+.q-hint{font-size:12px;color:var(--text-muted);margin-bottom:16px;line-height:1.5}
+
+/* Options */
+.opts{display:flex;flex-direction:column;gap:7px}
+.opt{
+  display:flex;align-items:center;gap:11px;width:100%;padding:12px 15px;
+  background:white;border:1.5px solid var(--border);border-radius:13px;
+  font-size:14px;font-family:'Noto Sans TC',sans-serif;color:var(--text);
+  cursor:pointer;transition:all .18s;text-align:left;line-height:1.45;
+}
+.opt:active{transform:scale(.98)}
+.opt .ck{
+  width:20px;height:20px;border-radius:5px;border:1.5px solid var(--border);
+  display:flex;align-items:center;justify-content:center;flex-shrink:0;
+  background:white;transition:all .18s;
+}
+.opt:hover{border-color:var(--btn);background:rgba(122,142,118,.03)}
+.opt.on{border-color:var(--btn);background:rgba(122,142,118,.06)}
+.opt.on .ck{background:var(--btn);border-color:var(--btn)}
+.opt.on .ck::after{content:'✓';color:#fff;font-size:12px;font-weight:600}
+
+/* Buttons */
+.btn-row{display:flex;gap:10px;margin-top:16px}
+.btn{
+  flex:1;padding:13px 0;border:none;border-radius:13px;
+  font-size:14px;font-family:'Noto Sans TC',sans-serif;font-weight:500;
+  cursor:pointer;transition:all .18s;letter-spacing:.5px;
+}
+.btn:active{transform:scale(.97)}
+.bp{background:var(--btn);color:#fff}
+.bp:hover{background:var(--btn-hover)}
+.bp:disabled{opacity:.3;cursor:not-allowed}
+.bs{background:#fff;color:var(--text);border:1.5px solid var(--border)}
+
+/* Intro */
+.intro{text-align:center;padding:20px 0 14px}
+.intro p{font-size:14px;color:var(--text-light);line-height:1.9;margin-bottom:14px;font-weight:300}
+.pet-section{margin:22px 0 6px;text-align:left}
+.pet-section label{font-size:14px;font-weight:500;display:block;margin-bottom:7px}
+.pet-in{
+  flex:1;padding:12px 15px;border:1.5px solid var(--border);border-radius:13px;
+  font-size:15px;font-family:'Noto Sans TC',sans-serif;background:#fff;
+  color:var(--text);outline:none;transition:border-color .2s;width:100%;
+}
+.pet-in:focus{border-color:var(--btn)}
+.sp-toggle{display:flex;gap:8px}
+.sp-btn{
+  flex:1;height:44px;border:1.5px solid var(--border);border-radius:12px;
+  background:#fff;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:4px;
+  transition:all .18s;font-family:'Noto Sans TC',sans-serif;font-size:15px;font-weight:500;color:var(--text-light);
+}
+.sp-btn:hover{border-color:var(--btn)}
+.sp-btn.active{border-color:var(--btn);background:rgba(122,142,118,.08);box-shadow:0 0 0 2px rgba(122,142,118,.12);color:var(--text);font-weight:600}
+.age-toggle{display:flex;gap:6px;margin-top:7px}
+.age-btn{
+  flex:1;padding:10px 6px;border:1.5px solid var(--border);border-radius:12px;
+  background:#fff;cursor:pointer;text-align:center;transition:all .18s;
+  font-family:'Noto Sans TC',sans-serif;font-size:13px;color:var(--text-light);
+}
+.age-btn.active{border-color:var(--btn);background:rgba(122,142,118,.08);color:var(--text);font-weight:600}
+.size-toggle{display:flex;gap:5px;margin-top:7px}
+.size-btn{
+  flex:1;padding:8px 4px;border:1.5px solid var(--border);border-radius:12px;
+  background:#fff;cursor:pointer;text-align:center;transition:all .18s;
+  font-family:'Noto Sans TC',sans-serif;font-size:12px;color:var(--text-light);
+}
+.size-btn.active{border-color:var(--btn);background:rgba(122,142,118,.08);color:var(--text);font-weight:600}
+.trait-opt{display:flex;align-items:flex-start;gap:10px;padding:10px 14px;background:#fff;border:1.5px solid var(--border);border-radius:12px;cursor:pointer;transition:all .18s}
+.trait-opt:has(input:checked){border-color:var(--btn);background:rgba(122,142,118,.06)}
+.trait-opt input[type="checkbox"]{margin-top:2px;accent-color:var(--btn);width:16px;height:16px;flex-shrink:0}
+.trait-label{font-size:14px;font-weight:500;color:var(--text)}
+.trait-hint{display:block;font-size:11px;color:var(--text-muted);margin-top:2px}
+
+/* Tip blocks in results */
+.tip-block{margin-top:12px;display:flex;flex-direction:column;gap:10px}
+.tip-row{display:flex;gap:10px;font-size:13px;line-height:1.65;color:var(--text)}
+.tip-icon{font-size:18px;flex-shrink:0;margin-top:1px}
+.tip-row strong{font-weight:600;font-size:13px}
+.axis-insight{border-radius:16px;padding:18px 16px;margin-bottom:12px;line-height:1.65}
+.axis-insight > strong{display:block;font-size:16px;margin-bottom:6px}
+.axis-insight p{font-size:13.5px;color:var(--text-light);margin:4px 0 0}
+.ch-insight{padding:22px 18px;border-radius:18px}
+
+/* Food therapy section */
+.food-rx{
+  background:linear-gradient(135deg,#FDF9F0 0%,#F0F5EE 100%);
+  border:1px solid rgba(180,168,130,0.2);border-radius:22px;
+  padding:24px 18px;margin:16px 0;
+  box-shadow:0 4px 20px rgba(74,61,51,0.04);
+}
+.food-rx .sec-icon{font-size:28px;text-align:center;margin-bottom:6px}
+.food-rx .sec-title{text-align:center;font-size:15px;font-weight:700;letter-spacing:2px;margin-bottom:2px}
+.food-rx .sec-sub{text-align:center;font-family:'Playfair Display',serif;font-size:11px;color:var(--text-muted);letter-spacing:2px;margin-bottom:14px}
+.food-rx .sec-line{width:36px;height:1px;background:var(--border);margin:0 auto 16px}
+.food-group{margin-bottom:16px}
+.food-group-title{font-size:13px;font-weight:600;color:var(--text);margin-bottom:8px;display:flex;align-items:center;gap:6px}
+.food-grid{display:grid;grid-template-columns:1fr 1fr;gap:7px}
+.food-chip{
+  display:flex;align-items:center;gap:8px;
+  padding:10px 12px;background:white;border-radius:12px;
+  border:1px solid rgba(229,221,211,.5);
+  font-size:13px;line-height:1.4;
+}
+.food-chip .fc-name{font-weight:500}
+.food-chip .fc-prop{font-size:10.5px;color:var(--text-muted);margin-top:1px}
+.food-chip .fc-icon{font-size:20px;flex-shrink:0}
+.food-avoid{
+  display:flex;flex-wrap:wrap;gap:6px;margin-top:6px;
+}
+.food-avoid-tag{
+  padding:4px 10px;border-radius:8px;font-size:12px;
+  background:#FDF0EE;color:#8A4A3A;border:1px solid rgba(191,117,101,0.15);
+}
+.food-season{margin-top:14px;padding:14px;background:rgba(255,255,255,0.7);border-radius:14px;border:1px solid rgba(229,221,211,.3)}
+.food-season-title{font-size:12px;font-weight:600;margin-bottom:8px;display:flex;align-items:center;gap:5px}
+.food-season-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+.food-season-item{font-size:12px;line-height:1.5;color:var(--text-light)}
+.food-season-item strong{color:var(--text);font-weight:500}
+.food-note{margin-top:14px;padding:12px 14px;background:rgba(122,142,118,0.06);border-radius:12px;font-size:12px;line-height:1.6;color:var(--text-light)}
+
+/* ===== RESULT ===== */
+.rp{animation:fadeUp .5s}
+.r-head{text-align:center;padding:14px 0}
+.r-name{font-size:22px;font-weight:700}
+.r-label{font-family:'Playfair Display',serif;font-size:12px;color:var(--text-muted);margin-top:2px;letter-spacing:2px}
+
+/* Chart card */
+.chart-card{
+  background:var(--card);backdrop-filter:blur(18px);
+  border:1px solid rgba(229,221,211,.55);border-radius:22px;
+  padding:22px 14px 18px;margin:16px 0;text-align:center;
+  box-shadow:0 6px 28px var(--shadow);
+}
+.chart-card h3{font-size:12px;font-weight:400;color:var(--text-muted);letter-spacing:1.5px;margin-bottom:6px}
+.chart-wrap{position:relative;width:300px;height:300px;margin:0 auto;padding:10px}
+
+/* Cold-hot bar */
+.ch-bar-wrap{margin:20px 14px 0;text-align:center}
+.ch-bar-label{font-size:12px;color:var(--text-muted);margin-bottom:8px;letter-spacing:1px}
+.ch-bar-outer{position:relative;height:28px;background:linear-gradient(to right,#B8D4E3,#E8E8E8,#E8C4B8);border-radius:14px;overflow:visible;margin:0 8px}
+.ch-bar-marker{
+  position:absolute;top:-4px;width:12px;height:36px;background:var(--text);
+  border-radius:6px;transform:translateX(-50%);transition:left .8s;opacity:.7;
+}
+.ch-bar-labels{display:flex;justify-content:space-between;margin:6px 8px 0;font-size:11px;color:var(--text-muted)}
+
+/* Signal cards */
+.sig-card{
+  background:var(--card);backdrop-filter:blur(18px);
+  border:1px solid rgba(229,221,211,.55);border-radius:22px;
+  padding:22px 20px;margin:16px 0;box-shadow:0 6px 28px var(--shadow);
+}
+.sec-title{font-size:15px;font-weight:500;margin-bottom:4px;display:flex;align-items:center;gap:7px}
+.sec-line{width:28px;height:1px;background:var(--border);margin:8px 0 12px}
+.sig-row{display:flex;align-items:center;gap:10px;margin:8px 0;font-size:13px}
+.sig-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0}
+.sig-bar-bg{flex:1;height:5px;background:var(--border);border-radius:3px;overflow:hidden}
+.sig-bar-fill{height:100%;border-radius:3px;transition:width 1.2s}
+.sig-val{width:24px;font-size:11px;color:var(--text-muted);text-align:right}
+
+/* Contradiction alert */
+.warn-card{
+  background:#FFF8F0;backdrop-filter:blur(18px);
+  border:1.5px solid #E8C88A;border-radius:22px;
+  padding:22px 20px;margin:16px 0;box-shadow:0 6px 28px rgba(196,136,58,.06);
+}
+.warn-icon{font-size:20px;margin-bottom:8px}
+.warn-title{font-size:15px;font-weight:600;color:#8A6A2A;margin-bottom:4px}
+.warn-line{width:28px;height:1px;background:#E8C88A;margin:8px 0 12px}
+.warn-item{font-size:13px;line-height:1.8;color:#6A5020;margin:6px 0;padding-left:8px;border-left:2px solid #E8C88A}
+.warn-note{font-size:12px;color:var(--text-muted);margin-top:14px;line-height:1.7;font-weight:300}
+
+/* Summary card */
+.summary-card{
+  background:var(--card);backdrop-filter:blur(18px);
+  border:1px solid rgba(229,221,211,.55);border-radius:22px;
+  padding:22px 20px;margin:16px 0;box-shadow:0 6px 28px var(--shadow);
+}
+.summary-text{font-size:14px;line-height:1.9;font-weight:300;color:var(--text-light)}
+
+/* Axis insight rows */
+.axis-insight{margin:10px 0;padding:12px 14px;border-radius:14px;font-size:13px;line-height:1.7}
+.axis-insight .ai-label{font-weight:600;margin-bottom:2px}
+.axis-insight .ai-desc{font-weight:300;color:var(--text-light)}
+
+/* CTA & tip */
+.tip-card{
+  background:var(--card);backdrop-filter:blur(18px);border:1px solid rgba(229,221,211,.55);
+  border-radius:18px;padding:18px;margin:16px 0;font-size:13px;line-height:1.8;
+  color:var(--text-light);font-weight:300;box-shadow:0 6px 28px var(--shadow);
+}
+.tip-card strong{color:var(--text);font-weight:500}
+.cta-card{text-align:center;margin:18px 0 6px;padding:20px 18px;background:var(--card);backdrop-filter:blur(18px);border:1px solid rgba(229,221,211,.55);border-radius:18px;box-shadow:0 6px 28px var(--shadow)}
+.cta-card p{font-size:13px;color:var(--text-light);margin-bottom:12px;line-height:1.7;font-weight:300}
+
+.hidden{display:none!important}
+.share-overlay{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.55);z-index:999;display:flex;align-items:center;justify-content:center;padding:16px}
+.share-overlay.hidden{display:none}
+.share-modal{background:#fff;border-radius:18px;max-width:380px;width:100%;max-height:85vh;overflow-y:auto;padding:18px;text-align:center}
+.share-hint{font-size:12px;color:var(--text-muted);margin-bottom:10px;line-height:1.6}
+.share-card{background:#f9f7f3;border-radius:14px;padding:22px 18px;text-align:center}
+.share-card .sc-title{font-size:15px;font-weight:600;color:var(--primary);letter-spacing:1px}
+.share-card .sc-sub{font-size:11px;color:var(--text-muted);margin-top:2px}
+.share-card .sc-divider{width:40px;height:1px;background:var(--border);margin:12px auto}
+.share-card .sc-name{font-size:16px;font-weight:600;color:var(--text);margin:8px 0 4px}
+.share-card .sc-pattern{display:inline-block;font-size:13px;padding:4px 14px;border-radius:20px;background:rgba(122,142,118,.12);color:var(--primary);font-weight:500;margin:6px 0}
+.share-card .sc-desc{font-size:11.5px;color:var(--text-light);line-height:1.6;margin:8px 0;padding:0 6px}
+.share-card .sc-footer{font-size:11px;color:var(--text-muted);margin-top:10px;line-height:1.5}
+.share-img{width:100%;border-radius:12px}
+.btn-row{display:flex;gap:8px;justify-content:center;margin-top:10px}
+</style>
+</head>
+<body>
+
+<div class="bg-layer">
+  <div class="bg-blob bb1"></div><div class="bg-blob bb2"></div><div class="bg-blob bb3"></div>
+</div>
+
+<svg class="leaf-r" viewBox="0 0 100 260" fill="none">
+  <g><path d="M50 8C65 30 78 55 72 85C85 70 92 90 88 115C78 108 74 120 68 140C80 135 85 155 78 175C68 165 62 178 58 195C68 190 72 210 64 230C55 220 50 232 48 248" stroke="#7A9970" stroke-width="1.2" fill="none" opacity=".5"/>
+  <path d="M72 85C55 78 48 58 50 8" fill="#7A9970" opacity=".08"/>
+  <path d="M50 8C35 30 22 55 28 85C15 70 8 90 12 115C22 108 26 120 32 140C20 135 15 155 22 175" stroke="#7A9970" stroke-width="1" fill="none" opacity=".35"/>
+  </g>
+</svg>
+
+<div class="container">
+
+<div class="header">
+  <svg width="160" height="22" viewBox="0 0 160 22" fill="none">
+    <text x="0" y="18" font-family="'Playfair Display', serif" font-size="20" font-weight="600" fill="#00553E" letter-spacing="3">ZODIAC PET</text>
+  </svg>
+  <h1>毛孩體質觀察指南</h1>
+  <div class="sub">Constitution Observation Tool</div>
+  <div class="brand">拾貳寵動物醫院 ✦ 中獸醫門診</div>
+  <div class="h-line"></div>
+</div>
+
+<!-- INTRO -->
+<div id="intro-page">
+  <div class="intro">
+    <svg width="64" height="64" viewBox="0 0 64 64" fill="none">
+      <circle cx="32" cy="32" r="30" fill="#E8F0E5" opacity=".5"/>
+      <path d="M22 38c-2-6 0-12 4-16s10-5 15-2c4-4 10-3 13 2s2 12-2 15c3 5 1 11-3 14s-10 2-13-1c-5 4-11 3-14-1s-3-8 0-11z" fill="#7A9970" opacity=".18" stroke="#7A9970" stroke-width="1" opacity=".4"/>
+      <circle cx="26" cy="30" r="2.5" fill="#1A2E1A" opacity=".5"/>
+      <circle cx="38" cy="30" r="2.5" fill="#1A2E1A" opacity=".5"/>
+      <path d="M29 37c1.5 2 3.5 3 5.5 0" stroke="#1A2E1A" stroke-width="1.2" stroke-linecap="round" fill="none" opacity=".4"/>
+    </svg>
+    <p>
+      只要 <strong>14 個觀察題</strong>，就能幫你看見<br>
+      毛孩目前的體質傾向和需要留意的地方<br>
+    </p>
+    <p style="font-size:12px;color:var(--text-muted)">
+      ⚠️ 這個工具不是診斷，是觀察練習<br>最終體質判讀，請交給中獸醫師
+    </p>
+  </div>
+  <div class="pet-section">
+    <label>毛孩的名字</label>
+    <input type="text" id="pet-name" class="pet-in" placeholder="例：阿財" style="margin-bottom:14px">
+    <label>牠是⋯</label>
+    <div class="sp-toggle" style="margin-top:7px">
+      <button type="button" class="sp-btn active" id="sp-dog" onclick="setSp('dog')">🐕 狗狗</button>
+      <button type="button" class="sp-btn" id="sp-cat" onclick="setSp('cat')">🐈 貓咪</button>
+    </div>
+  </div>
+  <!-- Dog size (only shown for dogs) -->
+  <div class="pet-section" id="size-section">
+    <label>體型</label>
+    <div class="size-toggle">
+      <button type="button" class="size-btn" onclick="setSize('small')">小型<br><span style="font-size:10px;color:var(--text-muted)">&lt;10kg</span></button>
+      <button type="button" class="size-btn active" onclick="setSize('medium')">中型<br><span style="font-size:10px;color:var(--text-muted)">10-25kg</span></button>
+      <button type="button" class="size-btn" onclick="setSize('large')">大型<br><span style="font-size:10px;color:var(--text-muted)">25-40kg</span></button>
+      <button type="button" class="size-btn" onclick="setSize('giant')">巨型<br><span style="font-size:10px;color:var(--text-muted)">&gt;40kg</span></button>
+    </div>
+  </div>
+  <div class="pet-section">
+    <label>年齡</label>
+    <div class="age-toggle" id="age-toggle"></div>
+  </div>
+  <!-- Breed traits -->
+  <div class="pet-section">
+    <label>外觀特徵<span style="font-size:11px;color:var(--text-muted);font-weight:400;margin-left:6px">可複選，沒有就跳過</span></label>
+    <div class="trait-checks" style="margin-top:8px;display:flex;flex-direction:column;gap:8px">
+      <label class="trait-opt" id="trait-brachy-wrap">
+        <input type="checkbox" id="trait-brachy" onchange="updateTraits()">
+        <span class="trait-label">🐽 短吻品種</span>
+        <span class="trait-hint" id="trait-brachy-hint">如法鬥、巴哥、英鬥、西施⋯</span>
+      </label>
+      <label class="trait-opt">
+        <input type="checkbox" id="trait-thickcoat" onchange="updateTraits()">
+        <span class="trait-label">🧶 厚毛／長毛／雙層毛</span>
+        <span class="trait-hint" id="trait-coat-hint">如哈士奇、金毛、薩摩耶⋯</span>
+      </label>
+    </div>
+  </div>
+  <div class="btn-row" style="margin-top:22px">
+    <button class="btn bp" onclick="startQuiz()">開始觀察 →</button>
+  </div>
+</div>
+
+<!-- QUIZ -->
+<div id="quiz-page" class="hidden">
+  <div class="progress-wrap">
+    <div class="progress-label"><span id="p-text"></span><span id="p-cat"></span></div>
+    <div class="progress-bar"><div class="progress-fill" id="p-fill"></div></div>
+  </div>
+  <div id="q-area"></div>
+</div>
+
+<!-- RESULT -->
+<div id="result-page" class="hidden"></div>
+
+<!-- Share card overlay -->
+<div class="share-overlay hidden" id="share-overlay" onclick="closeShare(event)">
+  <div class="share-modal">
+    <div class="share-hint">長按圖片即可儲存到手機相簿<br>再分享到 IG Story / LINE</div>
+    <div id="share-img-wrap"></div>
+    <div class="btn-row" style="margin-top:12px;padding:0 10px">
+      <button class="btn bp" onclick="doNativeShare()">分享給朋友</button>
+      <button class="btn bs" onclick="closeShare()">關閉</button>
+    </div>
+  </div>
+</div>
+
+<div class="footer">Powered by Dr. Chiu Chiu ✦ 拾貳寵動物醫院</div>
+</div>
+
+<script>
+// ===== STATE =====
+let petSp = 'dog', petSize = 'medium', petAge = 'adult', petName = '';
+let breedTraits = { brachy: false, thickCoat: false };
+let curQ = 0, answers = [];
+let shareData = {}; // for share card
+let lastPattern = ''; // store pattern for share
+
+// AAHA-based age brackets (species + size → age cutoffs)
+const AGE_BRACKETS = {
+  dog: {
+    small:  { young: [0,1],  adult: [1,6],  mature: [7,10], senior: [11,99] },
+    medium: { young: [0,1],  adult: [1,5],  mature: [6,9],  senior: [10,99] },
+    large:  { young: [0,1.5],adult: [1.5,5],mature: [6,8],  senior: [9,99] },
+    giant:  { young: [0,2],  adult: [2,5],  mature: [5,7],  senior: [7,99] },
+  },
+  cat: {
+    default:{ young: [0,1],  adult: [1,6],  mature: [7,10], senior: [11,99] },
+  }
+};
+
+const AGE_LABELS = {
+  young:  '幼齡',
+  adult:  '青年',
+  mature: '壯年',
+  senior: '熟齡'
+};
+
+function setSp(s) {
+  petSp = s;
+  document.getElementById('sp-dog').classList.toggle('active', s==='dog');
+  document.getElementById('sp-cat').classList.toggle('active', s==='cat');
+  // Show/hide size section for dogs
+  document.getElementById('size-section').style.display = s==='dog' ? 'block' : 'none';
+  // Update breed hints for cats
+  document.getElementById('trait-brachy-hint').textContent =
+    s==='cat' ? '如波斯貓、異國短毛、喜馬拉雅貓⋯' : '如法鬥、巴哥、英鬥、西施⋯';
+  document.getElementById('trait-coat-hint').textContent =
+    s==='cat' ? '如波斯貓、緬因貓、布偶貓⋯' : '如哈士奇、金毛、薩摩耶⋯';
+  renderAgeBrackets();
+}
+
+function setSize(sz) {
+  petSize = sz;
+  document.querySelectorAll('.size-btn').forEach((b,i) => {
+    b.classList.toggle('active', ['small','medium','large','giant'][i]===sz);
+  });
+  renderAgeBrackets();
+}
+
+function renderAgeBrackets() {
+  const sizeKey = petSp === 'cat' ? 'default' : petSize;
+  const brackets = AGE_BRACKETS[petSp][sizeKey];
+  const container = document.getElementById('age-toggle');
+  let html = '';
+  const stages = ['young','adult','mature','senior'];
+  stages.forEach(stage => {
+    const [lo, hi] = brackets[stage];
+    const rangeText = hi >= 99 ? `${lo}歲+` : `${lo}-${hi}歲`;
+    const isActive = petAge === stage ? ' active' : '';
+    html += `<button type="button" class="age-btn${isActive}" onclick="setAge('${stage}')">${AGE_LABELS[stage]}<br><span style="font-size:10px;color:var(--text-muted)">${rangeText}</span></button>`;
+  });
+  container.innerHTML = html;
+}
+
+function setAge(a) {
+  petAge = a;
+  renderAgeBrackets();
+}
+
+function updateTraits() {
+  breedTraits.brachy = document.getElementById('trait-brachy').checked;
+  breedTraits.thickCoat = document.getElementById('trait-thickcoat').checked;
+}
+
+// Initialize dynamic UI on load
+document.addEventListener('DOMContentLoaded', () => {
+  renderAgeBrackets();
+});
+
+// ===== QUESTION BANK =====
+// Each option has scoring: { e: energy, s: substance, m: metabolism, l: load, ch: cold-hot }
+// e/s/m: positive = good, negative = deficient
+// l: positive = excess/burden, negative = depleted
+// ch: positive = hot, negative = cold
+// Plus hidden five-element mapping (not shown): wu = [木,火,土,金,水] weights
+
+const QS = [
+  // --- ENERGY AXIS ---
+  {
+    q: '牠平常的精神和活動量？',
+    hint: '想想牠一整天下來的狀態',
+    cat: 'e', cl: '活力觀察',
+    opts: [
+      { t: '整天活力滿滿，動個不停', s: {e:3,s:0,m:0,l:1,ch:1}, wu:[1,2,0,0,0] },
+      { t: '白天精神好，到傍晚正常放鬆', s: {e:2,s:0,m:0,l:0,ch:0}, wu:[0,0,1,1,0] },
+      { t: '時好時壞，有些時段明顯沒精神', s: {e:-1,s:0,m:-1,l:0,ch:0}, wu:[0,0,1,0,1] },
+      { t: '大部分時間懶洋洋，叫了才慢慢動', s: {e:-2,s:0,m:0,l:-1,ch:-1}, wu:[0,0,0,0,2] },
+    ]
+  },
+  {
+    q: '叫牠名字或聽到聲響時的反應？',
+    hint: '觀察牠的反應速度和眼神',
+    cat: 'e', cl: '活力觀察',
+    opts: [
+      { t: '馬上轉頭、眼睛亮亮的，耳朵豎起來', s: {e:3,s:0,m:0,l:0,ch:0}, wu:[1,1,0,0,0] },
+      { t: '會反應但不太急，慢慢看過來', s: {e:1,s:0,m:0,l:0,ch:0}, wu:[0,0,2,0,0] },
+      { t: '有時候沒什麼反應，好像沒聽到', s: {e:-1,s:0,m:0,l:0,ch:-1}, wu:[0,0,0,1,1] },
+      { t: '幾乎都不太理會，眼神比較呆滯', s: {e:-3,s:-1,m:0,l:-1,ch:-1}, wu:[0,0,0,0,2] },
+    ]
+  },
+  {
+    q: '食慾和吃東西的狀態？',
+    hint: '觀察牠對食物的態度和消化速度',
+    cat: 'e', cl: '活力觀察',
+    opts: [
+      { t: '超級好，碗放下就掃光，好像永遠吃不飽', s: {e:2,s:0,m:0,l:2,ch:2}, wu:[0,1,1,0,0] },
+      { t: '正常穩定，時間到就吃完', s: {e:2,s:1,m:1,l:0,ch:0}, wu:[0,0,1,1,0] },
+      { t: '時好時壞，偶爾不太想吃', s: {e:-1,s:0,m:-1,l:0,ch:0}, wu:[1,0,0,0,1] },
+      { t: '長期食慾不好，吃很少或很挑', s: {e:-2,s:-1,m:-1,l:-1,ch:-1}, wu:[0,0,1,0,1] },
+    ]
+  },
+  // --- SUBSTANCE AXIS ---
+  {
+    q: '毛髮和皮膚的狀態？',
+    hint: '摸摸看牠的毛，觀察光澤和皮膚',
+    cat: 's', cl: '體態觀察',
+    opts: [
+      { t: '毛量豐厚、有光澤、摸起來順', s: {e:0,s:3,m:0,l:0,ch:0}, wu:[0,0,0,2,0] },
+      { t: '還可以，沒有明顯問題', s: {e:0,s:1,m:0,l:0,ch:0}, wu:[0,0,1,1,0] },
+      { t: '毛比較乾、容易打結、皮屑偏多', s: {e:0,s:-2,m:0,l:0,ch:0}, wu:[1,0,0,1,0] },
+      { t: '毛稀疏、皮膚乾燥、有時掉毛嚴重', s: {e:0,s:-3,m:-1,l:0,ch:1}, wu:[0,1,0,0,1] },
+      { t: '毛摸起來油膩、體味偏重、皮膚偏紅或潮濕', s: {e:0,s:-1,m:-2,l:1,ch:2}, wu:[0,1,1,0,0] },
+    ]
+  },
+  {
+    q: '牠的體型和肌肉狀態？',
+    hint: '用手感受身體的肉量',
+    cat: 's', cl: '體態觀察',
+    opts: [
+      { t: '肌肉結實飽滿，體態適中', s: {e:1,s:3,m:0,l:0,ch:0}, wu:[1,0,1,0,0] },
+      { t: '偏圓潤，肉肉的但不至於太胖', s: {e:0,s:1,m:-1,l:2,ch:0}, wu:[0,0,2,0,0] },
+      { t: '明顯過重，腰線消失、摸不太到肋骨', s: {e:-1,s:0,m:-2,l:3,ch:0}, wu:[0,0,2,0,0] },
+      { t: '偏瘦，摸得到肋骨但還好', s: {e:0,s:-1,m:0,l:-1,ch:0}, wu:[1,0,0,0,1] },
+      { t: '很瘦、肌肉鬆垮、骨架明顯', s: {e:-1,s:-3,m:0,l:-2,ch:0}, wu:[0,0,0,0,2] },
+    ]
+  },
+  // --- METABOLISM AXIS ---
+  {
+    q: '排便的狀態？',
+    hint: '觀察便便的形狀、軟硬和氣味',
+    cat: 'm', cl: '代謝觀察',
+    opts: [
+      { t: '成形正常，氣味不會特別重', s: {e:0,s:0,m:3,l:0,ch:0}, wu:[0,0,1,1,0] },
+      { t: '偏軟、不太成形、有時稀稀的', s: {e:0,s:0,m:-1,l:-1,ch:-1}, wu:[0,0,2,0,1] },
+      { t: '黏膩、不容易撿起來、沾草地或地板、氣味偏重', s: {e:0,s:0,m:-2,l:2,ch:0}, wu:[0,0,2,0,0] },
+      { t: '偏硬偏乾、排便不太順暢', s: {e:0,s:-1,m:-1,l:1,ch:1}, wu:[0,1,0,1,0] },
+      { t: '時軟時硬，不太規律', s: {e:0,s:0,m:-1,l:0,ch:0}, wu:[1,0,1,0,0] },
+    ]
+  },
+  {
+    q: '體味和分泌物的狀態？',
+    hint: '注意口氣、耳朵、眼睛分泌物',
+    cat: 'm', cl: '代謝觀察',
+    opts: [
+      { t: '幾乎沒什麼味道，眼耳都乾淨', s: {e:0,s:0,m:3,l:0,ch:0}, wu:[0,0,0,1,1] },
+      { t: '稍微有一點味道，但不明顯', s: {e:0,s:0,m:1,l:0,ch:0}, wu:[0,0,1,0,0] },
+      { t: '口氣比較明顯，或眼屎/耳垢偏多', s: {e:0,s:0,m:-2,l:1,ch:1}, wu:[0,1,1,0,0] },
+      { t: '體味重、分泌物多而且偏黃偏稠', s: {e:0,s:0,m:-3,l:2,ch:2}, wu:[0,1,1,0,0] },
+    ]
+  },
+  // --- ABDOMINAL OBSERVATION (腹部觀察) ---
+  {
+    q: '輕輕按壓牠的肚子，感覺像什麼？',
+    hint: '趁牠放鬆時，用手掌從胸口慢慢往下腹滑過去感受',
+    cat: 'l', cl: '腹部觀察',
+    opts: [
+      { t: '🏀 有彈性、適中回彈——像充好氣的籃球', s: {e:1,s:1,m:1,l:0,ch:0}, wu:[0,0,1,1,0] },
+      { t: '🎈 軟綿綿、按下去癟掉不太回彈', s: {e:-1,s:-1,m:0,l:-2,ch:-1}, wu:[0,0,1,0,2] },
+      { t: '🥁 表面緊繃、按不太下去，像鼓面', s: {e:0,s:0,m:-1,l:3,ch:0}, wu:[1,0,1,0,0] },
+      { t: '🧱 某個地方特別硬或有一塊東西的感覺', s: {e:0,s:0,m:-2,l:2,ch:0}, _flag:'abd_lump', wu:[1,0,0,0,1] },
+      { t: '🌊 按下去軟軟的但會咕嚕咕嚕晃動（像水袋）', s: {e:0,s:0,m:-1,l:1,ch:-1}, _flag:'abd_water', wu:[0,0,1,0,1] },
+    ]
+  },
+  {
+    q: '用手掌貼著牠的肚皮，溫度和聲音如何？',
+    hint: '靜靜貼著 10 秒，感受溫度，聽聽有沒有聲音',
+    cat: 'l', cl: '腹部觀察',
+    opts: [
+      { t: '溫溫的、安靜，偶爾有一點點咕嚕聲', s: {e:0,s:0,m:0,l:0,ch:0}, wu:[0,0,1,0,0] },
+      { t: '摸起來偏涼，尤其下腹比較涼', s: {e:-1,s:0,m:0,l:0,ch:-2}, _flag:'abd_cold', wu:[0,0,0,0,2] },
+      { t: '摸起來偏熱，皮膚表面溫度高', s: {e:0,s:0,m:0,l:1,ch:2}, _flag:'abd_hot', wu:[0,1,0,0,0] },
+      { t: '肚子裡咕嚕咕嚕叫很大聲或很頻繁', s: {e:0,s:0,m:-2,l:1,ch:0}, _flag:'abd_rumble', wu:[0,0,2,0,0] },
+    ]
+  },
+  {
+    q: '牠被摸肚子時的反應？',
+    hint: '觀察牠放鬆時你碰牠肚子的態度',
+    cat: 'l', cl: '腹部觀察',
+    opts: [
+      { t: '很享受，會翻肚子讓你摸', s: {e:1,s:0,m:0,l:0,ch:0}, wu:[0,0,1,0,0] },
+      { t: '不排斥但也不特別喜歡，平靜接受', s: {e:0,s:0,m:0,l:0,ch:0}, wu:[0,0,1,0,0] },
+      { t: '碰到某個位置會縮肚子、扭開或回頭看', s: {e:0,s:0,m:-1,l:1,ch:0}, _flag:'abd_tender', wu:[1,0,0,0,1] },
+      { t: '非常抗拒，碰到就想跑或低吼', s: {e:0,s:0,m:-2,l:2,ch:0}, _flag:'abd_resist', wu:[1,0,0,0,1] },
+    ]
+  },
+  {
+    q: '牠的體重最近有什麼變化？',
+    hint: '回想最近 1-2 個月',
+    cat: 'l', cl: '腹部觀察',
+    opts: [
+      { t: '穩定，沒什麼大變化', s: {e:0,s:0,m:0,l:0,ch:0}, wu:[0,0,1,1,0] },
+      { t: '最近有在變胖、吃不多卻在增加', s: {e:0,s:0,m:-2,l:3,ch:0}, wu:[0,0,2,0,0] },
+      { t: '在變瘦、吃得夠但體重下降', s: {e:-1,s:-2,m:0,l:-1,ch:1}, wu:[0,1,0,0,1] },
+      { t: '不確定', s: {e:0,s:0,m:0,l:0,ch:0}, wu:[0,0,0,0,0] },
+    ]
+  },
+  // --- COLD-HOT BAR ---
+  {
+    q: '摸摸牠的耳朵和四肢末端，溫度如何？',
+    hint: '用手背感受耳根到耳尖、腳掌的溫度',
+    cat: 't', cl: '寒熱觀察',
+    opts: [
+      { t: '耳朵溫溫的、腳掌也溫溫的——正常', s: {e:0,s:0,m:0,l:0,ch:0}, wu:[0,0,1,0,0] },
+      { t: '耳朵和腳掌都偏涼，尤其冬天更明顯', s: {e:-1,s:0,m:0,l:0,ch:-3}, wu:[0,0,0,0,2] },
+      { t: '耳朵整片發燙，身體摸起來也偏熱', s: {e:0,s:-1,m:0,l:0,ch:3}, wu:[0,2,0,0,0] },
+      { t: '四肢偏涼但軀幹摸起來偏熱（不一致）', s: {e:0,s:0,m:0,l:0,ch:0}, _contradiction:'R1', wu:[0,0,0,0,1] },
+    ]
+  },
+  {
+    q: '牠休息時喜歡找什麼樣的地方？',
+    hint: '觀察牠自己選擇的休息位置',
+    cat: 't', cl: '寒熱觀察',
+    qc_dog: null,
+    qc_cat: '牠休息時通常選什麼地方？',
+    opts: [
+      { t: '找陽光或暖氣旁邊、喜歡窩被子裡', s: {e:-1,s:0,m:0,l:0,ch:-2}, wu:[0,0,0,0,2] },
+      { t: '沒特別偏好，哪裡都可以睡', s: {e:0,s:0,m:0,l:0,ch:0}, wu:[0,0,1,0,0] },
+      { t: '找磁磚、冷地板或陰涼處趴著', s: {e:0,s:0,m:0,l:0,ch:2}, wu:[0,1,0,0,0] },
+      { t: '有時找暖處、有時又跑去涼的地方（不固定）', s: {e:0,s:0,m:0,l:0,ch:0}, _contradiction:'R2', wu:[0,0,0,0,0] },
+    ]
+  },
+  {
+    // Dog version
+    q: '排除天熱和情緒興奮之後，牠的喘氣狀態？',
+    qc: '牠最近的理毛頻率？',
+    hint: '先排除天氣熱、剛運動完、興奮或緊張的情況，觀察牠安靜休息時的呼吸',
+    hintc: '注意牠舔自己的頻率有沒有變化',
+    cat: 't', cl: '寒熱觀察',
+    opts_dog: [
+      { t: '天氣涼的時候幾乎不喘', s: {e:0,s:0,m:0,l:0,ch:-1}, wu:[0,0,0,0,1] },
+      { t: '天熱或運動後才喘，安靜時正常', s: {e:0,s:0,m:0,l:0,ch:0}, wu:[0,0,1,0,0] },
+      { t: '不是很熱也經常在喘、舌頭伸很長', s: {e:0,s:-1,m:0,l:0,ch:3}, wu:[0,1,0,0,0] },
+      { t: '主要在情緒激動或緊張時喘，平靜後就停', s: {e:0,s:0,m:0,l:0,ch:0}, wu:[1,1,0,0,0] },
+    ],
+    opts_cat: [
+      { t: '理毛頻率正常，沒什麼變化', s: {e:0,s:0,m:0,l:0,ch:0}, wu:[0,0,1,0,0] },
+      { t: '最近理毛好像比以前頻繁', s: {e:0,s:0,m:0,l:0,ch:2}, wu:[0,1,0,0,0] },
+      { t: '理毛少、趴著不太動', s: {e:-1,s:0,m:0,l:0,ch:-1}, wu:[0,0,0,0,1] },
+      { t: '舔毛舔到某些地方都禿了', s: {e:0,s:-1,m:-1,l:0,ch:1}, wu:[1,1,0,0,0] },
+    ]
+  }
+];
+
+// ===== QUIZ ENGINE =====
+function startQuiz() {
+  petName = document.getElementById('pet-name').value.trim() || '毛孩';
+  curQ = 0; answers = new Array(QS.length).fill(null);
+  document.getElementById('intro-page').classList.add('hidden');
+  document.getElementById('quiz-page').classList.remove('hidden');
+  renderQ();
+}
+
+function renderQ() {
+  const q = QS[curQ];
+  const total = QS.length;
+  const pct = ((curQ) / total * 100).toFixed(0);
+  document.getElementById('p-text').textContent = `第 ${curQ+1} / ${total} 題`;
+  const catNames = {e:'活力觀察',s:'體態觀察',m:'代謝觀察',l:'腹部觀察',t:'寒熱觀察'};
+  document.getElementById('p-cat').textContent = catNames[q.cat] || '';
+  document.getElementById('p-fill').style.width = pct + '%';
+
+  const qText = (petSp==='cat' && q.qc) ? q.qc : q.q;
+  const hintText = (petSp==='cat' && q.hintc) ? q.hintc : q.hint;
+  const catCls = {e:'qc-e',s:'qc-s',m:'qc-m',l:'qc-l',t:'qc-t'}[q.cat];
+  const catLabel = catNames[q.cat];
+
+  let opts;
+  if (q.opts_dog && q.opts_cat) {
+    opts = petSp === 'cat' ? q.opts_cat : q.opts_dog;
+  } else {
+    opts = q.opts;
+  }
+
+  let html = `<div class="card">
+    <div class="q-num">Question ${curQ+1}</div>
+    <span class="q-cat ${catCls}">${catLabel}</span>
+    <div class="q-text">${qText}</div>
+    <div class="q-hint">${hintText}</div>
+    <div class="opts">`;
+
+  opts.forEach((o, i) => {
+    const sel = answers[curQ] === i ? ' on' : '';
+    html += `<button class="opt${sel}" onclick="pickOpt(${i})">
+      <span class="ck"></span><span>${o.t}</span>
+    </button>`;
+  });
+
+  html += `</div>`;
+  html += `<div class="btn-row">`;
+  if (curQ > 0) html += `<button class="btn bs" onclick="prevQ()">← 上一題</button>`;
+  if (curQ < total - 1) {
+    html += `<button class="btn bp" id="next-btn" onclick="nextQ()" ${answers[curQ]===null?'disabled':''}>下一題 →</button>`;
+  } else {
+    html += `<button class="btn bp" id="next-btn" onclick="showResult()" ${answers[curQ]===null?'disabled':''}>看結果</button>`;
+  }
+  html += `</div></div>`;
+  document.getElementById('q-area').innerHTML = html;
+}
+
+function pickOpt(i) {
+  answers[curQ] = i;
+  // Toggle .on class without full re-render to prevent flicker
+  const optBtns = document.querySelectorAll('#q-area .opts .opt');
+  optBtns.forEach((btn, idx) => {
+    btn.classList.toggle('on', idx === i);
+  });
+  // Enable next/result button
+  const nb = document.getElementById('next-btn');
+  if (nb) nb.disabled = false;
+}
+function nextQ() { if (answers[curQ] !== null) { curQ++; renderQ(); } }
+function prevQ() { curQ--; renderQ(); }
+
+// ===== SCORING ENGINE =====
+function calcScores() {
+  // Accumulate raw signals
+  let raw = {e:0, s:0, m:0, l:0, ch:0};
+  let counts = {e:0, s:0, m:0, l:0, ch:0};
+  let wu = [0,0,0,0,0]; // hidden five-element
+  let contradictions = [];
+  let abdFlags = []; // abdominal observation flags
+
+  QS.forEach((q, qi) => {
+    if (answers[qi] === null) return;
+    let opts;
+    if (q.opts_dog && q.opts_cat) {
+      opts = petSp === 'cat' ? q.opts_cat : q.opts_dog;
+    } else {
+      opts = q.opts;
+    }
+    const chosen = opts[answers[qi]];
+    if (!chosen) return;
+    const sc = chosen.s;
+
+    // Accumulate axis scores
+    ['e','s','m','l','ch'].forEach(k => {
+      if (sc[k] !== 0) { raw[k] += sc[k]; counts[k]++; }
+    });
+
+    // Five element hidden accumulation
+    if (chosen.wu) chosen.wu.forEach((v,i) => wu[i] += v);
+
+    // Contradiction detection
+    if (chosen._contradiction) contradictions.push(chosen._contradiction);
+    // Abdominal flags
+    if (chosen._flag) abdFlags.push(chosen._flag);
+  });
+
+  // === Age modifier (AAHA-based, species + size aware) ===
+  let ageMod = {e:0, s:0, m:0, l:0, ch:0};
+  if (petAge === 'young') {
+    ageMod.e = 1;       // young animals naturally more energetic
+    ageMod.l = -0.3;    // young bodies tend lighter/less accumulated
+  } else if (petAge === 'mature') {
+    ageMod.e = -0.3;    // subtle energy decline
+    ageMod.m = -0.2;    // metabolism starts slowing
+  } else if (petAge === 'senior') {
+    ageMod.e = -0.8;    // energy clearly declining
+    ageMod.s = -0.5;    // substance/nourishment depleting
+    ageMod.m = -0.4;    // metabolism slowing
+    ageMod.l = 0.3;     // more prone to accumulation
+    ageMod.ch = -0.5;   // tendency toward cold
+  }
+  // Giant breeds age faster — amplify senior effects
+  if (petSp === 'dog' && petSize === 'giant' && (petAge === 'mature' || petAge === 'senior')) {
+    ageMod.e -= 0.2;
+    ageMod.s -= 0.2;
+  }
+
+  // === Breed trait modifiers ===
+  let breedMod = {e:0, s:0, m:0, l:0, ch:0};
+  if (breedTraits.brachy) {
+    breedMod.ch = 0.8;  // brachycephalic = harder to dissipate heat → shifts hot
+    breedMod.m = -0.3;  // respiratory inefficiency affects metabolism
+  }
+  if (breedTraits.thickCoat) {
+    breedMod.ch = (breedMod.ch || 0) + 0.4; // thick coat traps heat
+  }
+
+  // Normalize to 0-5 scale
+  const energy = Math.max(0, Math.min(5, 2.5 + (raw.e + ageMod.e) * 0.35));
+  const bodyCondition = Math.max(0, Math.min(5, 2.5 + (raw.s + ageMod.s) * 0.42));
+  const metabolism = Math.max(0, Math.min(5, 2.5 + (raw.m + ageMod.m + breedMod.m) * 0.42));
+  // 腹部負擔: high = more accumulation/burden (direct direction)
+  const accumulation = Math.max(0, Math.min(5, 2.5 + (raw.l + ageMod.l) * 0.38));
+  // Cold-Hot with breed modifier
+  const coldHot = Math.max(-5, Math.min(5, (raw.ch + breedMod.ch) * 0.7));
+
+  // Cross-check contradictions
+  if (coldHot > 1 && energy < 2) contradictions.push('R4');
+  if (raw.l > 2 && raw.ch < -1) contradictions.push('R5');
+
+  // Remove duplicates
+  contradictions = [...new Set(contradictions)];
+
+  // Signal counts for display
+  const yangXuCount = (raw.e < 0 ? Math.abs(Math.round(raw.e)) : 0) + (raw.ch < -1 ? 1 : 0);
+  const yinXuCount = (raw.s < 0 ? Math.abs(Math.round(raw.s)) : 0) + (raw.ch > 1 ? 1 : 0);
+  const excessCount = (raw.l > 1 ? Math.round(raw.l) : 0);
+  const balancedCount = Math.max(0, 12 - yangXuCount - yinXuCount - excessCount);
+
+  return {
+    energy, bodyCondition, metabolism, accumulation, coldHot,
+    contradictions, abdFlags,
+    signals: { yangXu: yangXuCount, yinXu: yinXuCount, excess: excessCount, balanced: balancedCount },
+    wu, raw
+  };
+}
+
+// ===== RESULT RENDER =====
+// ====== FOOD THERAPY DATA (from 《肉食療法》) ======
+const FOOD_DB = {
+  // 溫性肉食
+  chicken:   { name:'雞肉', icon:'🐔', nature:'溫', flavor:'甘', channel:'脾胃', effect:'益氣溫中、補精填髓', avoid:'感冒發熱時暫停' },
+  lamb:      { name:'羊肉', icon:'🐑', nature:'溫', flavor:'甘', channel:'脾胃腎', effect:'補虛益氣、溫中暖下', avoid:'暑熱季節少用' },
+  beef:      { name:'牛肉', icon:'🐂', nature:'溫', flavor:'甘', channel:'脾胃', effect:'補中益氣、強筋壯骨', avoid:'濕熱體質少用' },
+  shrimp:    { name:'蝦', icon:'🦐', nature:'溫', flavor:'甘', channel:'肝腎', effect:'溫補腎陽', avoid:'皮膚過敏者慎用' },
+  eel:       { name:'黃鱔', icon:'🐍', nature:'溫', flavor:'甘', channel:'脾胃', effect:'補益虛損、溫腎壯陽', avoid:'外感發熱忌' },
+  seaCucumber:{ name:'海參', icon:'🫧', nature:'溫', flavor:'咸', channel:'腎', effect:'補益氣陰、安神', avoid:'—' },
+  // 涼性/寒性肉食
+  duck:      { name:'鴨肉', icon:'🦆', nature:'涼', flavor:'甘咸', channel:'脾胃肺腎', effect:'滋陰養胃、利水消腫', avoid:'脾胃陽虛忌' },
+  rabbit:    { name:'兔肉', icon:'🐇', nature:'涼', flavor:'甘', channel:'脾胃肝', effect:'補中益氣、滋陰潤燥', avoid:'脾胃虛寒慎用' },
+  crab:      { name:'螃蟹', icon:'🦀', nature:'寒', flavor:'咸', channel:'腎', effect:'散瘀止血', avoid:'脾胃寒者忌' },
+  clam:      { name:'蚌肉', icon:'🐚', nature:'寒', flavor:'甘咸', channel:'脾腎', effect:'清熱滋陰', avoid:'脾胃虛寒忌' },
+  // 平性肉食
+  pork:      { name:'豬肉', icon:'🐷', nature:'平', flavor:'甘咸', channel:'脾胃腎', effect:'補腎養血、滋陰潤燥', avoid:'多食助熱生痰' },
+  porkLiver: { name:'豬肝', icon:'🫀', nature:'溫', flavor:'甘苦', channel:'肝', effect:'補肝養血明目', avoid:'每週1-2次為限' },
+  chickenLiver:{ name:'雞肝', icon:'🫀', nature:'微溫', flavor:'甘', channel:'肝腎', effect:'滋補肝腎', avoid:'每週1-2次為限' },
+  lambLiver: { name:'羊肝', icon:'🫀', nature:'涼', flavor:'甘苦', channel:'肝脾', effect:'益血補肝明目', avoid:'每週1-2次為限' },
+  beefStomach:{ name:'牛肚', icon:'🥩', nature:'平', flavor:'甘', channel:'脾胃', effect:'補虛損、益脾胃', avoid:'—' },
+  porkStomach:{ name:'豬肚', icon:'🥩', nature:'溫', flavor:'甘', channel:'脾胃', effect:'補虛損、健脾胃', avoid:'—' },
+  crucianCarp:{ name:'鯽魚', icon:'🐟', nature:'平', flavor:'甘', channel:'脾胃', effect:'健脾利濕、利水消腫', avoid:'過敏體質慎' },
+  carp:      { name:'鯉魚', icon:'🐟', nature:'平', flavor:'甘', channel:'肝脾', effect:'利尿消腫、催乳', avoid:'—' },
+  perch:     { name:'鱸魚', icon:'🐟', nature:'平', flavor:'甘', channel:'肝腎脾胃', effect:'滋肝補腎、健脾和胃', avoid:'—' },
+  blackChicken:{ name:'烏雞', icon:'🐓', nature:'平', flavor:'甘', channel:'肝腎', effect:'補益肝腎、養陰退熱', avoid:'—' },
+  pigeon:    { name:'鴿肉', icon:'🕊️', nature:'平', flavor:'甘咸', channel:'肝腎肺', effect:'滋腎益氣', avoid:'食積胃熱忌' },
+  porkRib:   { name:'排骨', icon:'🦴', nature:'平', flavor:'甘', channel:'肝腎', effect:'健脾壯骨', avoid:'需燉軟' },
+  milk:      { name:'牛奶', icon:'🥛', nature:'平', flavor:'甘', channel:'心肺胃', effect:'補虛損、潤腸', avoid:'乳糖不耐者慎' },
+  chickenGizzard:{ name:'雞內金', icon:'💛', nature:'平', flavor:'甘', channel:'脾胃', effect:'消食化積', avoid:'—' },
+  loach:     { name:'泥鰍', icon:'🐟', nature:'平', flavor:'甘', channel:'脾肝腎', effect:'補中氣、祛濕邪', avoid:'—' },
+  lambBone:  { name:'羊骨', icon:'🦴', nature:'溫', flavor:'甘', channel:'腎', effect:'補血止痛', avoid:'需燉軟磨粉' },
+  porkSkin:  { name:'豬皮', icon:'🥓', nature:'涼', flavor:'甘', channel:'脾', effect:'和血脈、潤肌膚', avoid:'咳嗽不宜' },
+};
+
+function buildFoodTherapySection(sc) {
+  let h = '';
+
+  // Determine constitution pattern
+  const chLevel = sc.coldHot < -1.5 ? 'cold' : sc.coldHot > 1.5 ? 'hot' : 'neutral';
+  const eLevel = sc.energy < 1.8 ? 'qiXu' : sc.energy > 3.8 ? 'qiStrong' : 'qiOk';
+  const sLevel = sc.bodyCondition < 1.8 ? 'yinXu' : sc.bodyCondition > 3.8 ? 'bodyGood' : 'bodyOk';
+  const mLevel = sc.metabolism < 1.8 ? 'dampStag' : 'metaOk';
+  const hasCH = sc.contradictions.some(r => r==='R1'||r==='R2'||r==='R4');
+
+  // Build recommendation sets
+  let primary = [];   // 首選
+  let secondary = []; // 次選
+  let avoid = [];     // 忌用
+  let pattern = '';
+  let patternDesc = '';
+
+  if (hasCH) {
+    // 寒熱錯雜 → 平性為主
+    pattern = '寒熱錯雜';
+    patternDesc = '身體寒熱訊號交錯，食療以平性「地上跑的」為主（如豬肉、牛肉），避免太熱或太涼的食材加重混亂。等中獸醫師釐清再調整方向。';
+    primary = ['pork','crucianCarp','carp','perch','beefStomach'];
+    secondary = ['porkRib','milk','pigeon','loach'];
+    avoid = ['lamb','shrimp','crab','clam'];
+  } else if (chLevel === 'cold' && eLevel === 'qiXu') {
+    pattern = '陽虛氣虛';
+    patternDesc = '身體偏冷、活力不足，需要溫補脾腎、益氣回陽。首選「天上飛的」禽類（雞、鴿）補陽氣，搭配溫性畜類（羊、牛）暖脾胃。';
+    primary = ['chicken','lamb','beef','porkStomach'];
+    secondary = ['shrimp','eel','lambBone','pigeon'];
+    avoid = ['duck','rabbit','crab','clam'];
+  } else if (chLevel === 'cold') {
+    pattern = '偏寒';
+    patternDesc = '身體偏冷，適合溫性肉食暖中散寒。「天上飛的偏熱，地上跑的偏溫」——雞肉、羊肉、牛肉都是好選擇。';
+    primary = ['chicken','lamb','beef'];
+    secondary = ['shrimp','porkStomach','lambBone','seaCucumber'];
+    avoid = ['duck','crab','clam'];
+  } else if (chLevel === 'hot' && sLevel === 'yinXu') {
+    pattern = '陰虛內熱';
+    patternDesc = '體態偏虛又有偏熱跡象，需要滋陰清熱、養血潤燥。「雞補陽，鴨滋陰」——鴨肉涼性是首選，搭配「水裡游的」魚類滋養陰液。';
+    primary = ['duck','pork','blackChicken','perch'];
+    secondary = ['porkSkin','lambLiver','crucianCarp','carp'];
+    avoid = ['lamb','shrimp','chicken'];
+  } else if (chLevel === 'hot') {
+    pattern = '偏熱';
+    patternDesc = '身體偏熱，適合涼性或平性肉食清熱養陰。「水裡游的偏涼」——鴨肉、魚類優先，避免「天上飛的」溫熱禽類。';
+    primary = ['duck','rabbit','pork'];
+    secondary = ['crucianCarp','perch','blackChicken','carp'];
+    avoid = ['lamb','shrimp','beef'];
+  } else if (eLevel === 'qiXu') {
+    pattern = '氣虛';
+    patternDesc = '活力不足、容易疲倦，需要補氣健脾。雞肉補陽氣最直接，牛肉平補脾胃最穩當，鯽魚湯健脾又好消化。';
+    primary = ['chicken','beef','crucianCarp'];
+    secondary = ['pigeon','loach','porkStomach','beefStomach'];
+    avoid = [];
+  } else if (sLevel === 'yinXu') {
+    pattern = '血虛/陰虛';
+    patternDesc = '毛髮體態偏虛，需要補血養陰。肝類是補血首選（但需限量），烏雞滋陰養血兼補氣，豬肉涼潤也適合。';
+    primary = ['porkLiver','lambLiver','blackChicken','pork'];
+    secondary = ['chickenLiver','perch','duck'];
+    avoid = [];
+  } else if (mLevel === 'dampStag') {
+    pattern = '濕滯';
+    patternDesc = '代謝不暢、濕氣偏重，需要健脾利濕。濕邪纏綿不愈——鯽魚湯利濕最佳，兔肉涼而不膩，搭配少量薑煮鮮食幫助化濕。飲水也別過量，渴了再喝、喝溫的。';
+    primary = ['crucianCarp','carp','loach','rabbit'];
+    secondary = ['duck','chickenGizzard','porkStomach'];
+    avoid = ['pork','beef','lamb'];
+  } else {
+    pattern = '平和';
+    patternDesc = '目前沒有明顯偏性，均衡飲食即可，隨季節微調。天上飛的、地上跑的、水裡游的都可以輪著吃，重點是多樣化。';
+    primary = ['chicken','pork','beef','crucianCarp'];
+    secondary = ['duck','perch','porkRib','blackChicken'];
+    avoid = [];
+  }
+
+  lastPattern = pattern; // store for share card
+
+  // Render
+  h += `<div class="food-rx">
+    <div class="sec-icon">🥘</div>
+    <div class="sec-title">食療建議</div>
+    <div class="sec-sub">Food Therapy Guidance</div>
+    <div class="sec-line"></div>`;
+
+  // Mnemonic box — 肉食選擇直覺口訣
+  h += `<div style="background:linear-gradient(135deg,#f4f1e8 0%,#ede8db 100%);border-radius:12px;padding:14px 16px;margin-bottom:16px;border:1px solid #e0daca">
+    <div style="font-size:12px;font-weight:600;color:var(--primary);margin-bottom:6px">🧭 肉食選擇的直覺口訣</div>
+    <div style="font-size:13px;line-height:1.9;color:var(--text-main)">
+      <span style="display:inline-block;padding:2px 8px;border-radius:6px;background:#fce8e3;color:#8A4A3A;font-weight:500;margin-right:2px">天上飛的 → 偏熱</span> 雞、鴿、鵪鶉補陽氣<br>
+      <span style="display:inline-block;padding:2px 8px;border-radius:6px;background:#E8F0E5;color:#4A7040;font-weight:500;margin-right:2px">地上跑的 → 偏溫</span> 牛、羊、豬補脾胃<br>
+      <span style="display:inline-block;padding:2px 8px;border-radius:6px;background:#E3EEF2;color:#4A7A88;font-weight:500;margin-right:2px">水裡游的 → 偏涼</span> 魚、蝦、蟹滋陰液
+    </div>
+    <div style="font-size:11px;color:var(--text-muted);margin-top:6px;font-style:italic">雞補陽，鴨滋陰——禽類最簡單的二分法</div>
+  </div>`;
+
+  // Pattern badge
+  h += `<div style="text-align:center;margin-bottom:14px">
+    <span style="display:inline-block;padding:4px 16px;border-radius:20px;font-size:13px;font-weight:600;
+      background:${chLevel==='cold'?'#E3EEF2':chLevel==='hot'?'#FCE8E3':'#E8F0E5'};
+      color:${chLevel==='cold'?'#4A7A88':chLevel==='hot'?'#8A4A3A':'#4A7040'}">
+      ${petName} 的食療方向：${pattern}
+    </span>
+    <p style="font-size:12.5px;color:var(--text-light);margin-top:8px;line-height:1.6">${patternDesc}</p>
+  </div>`;
+
+  // Primary foods
+  h += `<div class="food-group">
+    <div class="food-group-title">✦ 首選肉食</div>
+    <div class="food-grid">`;
+  primary.forEach(k => {
+    const f = FOOD_DB[k];
+    if (f) h += `<div class="food-chip"><span class="fc-icon">${f.icon}</span><div><div class="fc-name">${f.name}</div><div class="fc-prop">${f.nature}性 ${f.flavor} → ${f.effect.split('、')[0]}</div></div></div>`;
+  });
+  h += `</div></div>`;
+
+  // Secondary foods
+  h += `<div class="food-group">
+    <div class="food-group-title">◈ 次選搭配</div>
+    <div class="food-grid">`;
+  secondary.forEach(k => {
+    const f = FOOD_DB[k];
+    if (f) h += `<div class="food-chip"><span class="fc-icon">${f.icon}</span><div><div class="fc-name">${f.name}</div><div class="fc-prop">${f.nature}性 ${f.flavor} → ${f.effect.split('、')[0]}</div></div></div>`;
+  });
+  h += `</div></div>`;
+
+  // Avoid foods
+  if (avoid.length > 0) {
+    h += `<div class="food-group">
+      <div class="food-group-title">⊘ 暫時避開</div>
+      <div class="food-avoid">`;
+    avoid.forEach(k => {
+      const f = FOOD_DB[k];
+      if (f) h += `<span class="food-avoid-tag">${f.icon} ${f.name}（${f.nature}性）</span>`;
+    });
+    h += `</div></div>`;
+  }
+
+  // Seasonal tips — 節氣層級
+  const now = new Date();
+  const month = now.getMonth() + 1;
+  const day = now.getDate();
+  // Approximate solar term boundaries (month.day)
+  let seasonTip = '';
+  let solarTerm = '';
+
+  if ((month === 2 && day >= 4) || (month === 2 && day < 19)) {
+    solarTerm = '立春';
+    seasonTip = `<strong>🌱 立春（${month}月）</strong>：肝氣初生，飲食宜柔肝疏達。鯽魚湯、豬肝粥（少量）可疏肝養血。減少辛辣燥烈食材，以免助春火。`;
+  } else if ((month === 2 && day >= 19) || (month === 3 && day < 6)) {
+    solarTerm = '雨水';
+    seasonTip = `<strong>🌱 雨水（${month}月）</strong>：濕氣漸起，脾胃需護。平性肉類（牛肉、鯽魚）為主，少量薑煮鮮食幫助化濕。`;
+  } else if ((month === 3 && day >= 6) || (month === 3 && day < 21)) {
+    solarTerm = '驚蟄';
+    seasonTip = `<strong>🌱 驚蟄（${month}月）</strong>：陽氣漸升。雞肉可補春陽，鯽魚湯健脾。避免過食生冷，以免阻礙陽氣升發。`;
+  } else if ((month === 3 && day >= 21) || (month === 4 && day < 5)) {
+    solarTerm = '春分';
+    seasonTip = `<strong>🌱 春分（${month}月）</strong>：陰陽平衡之時。飲食宜平和——牛肉、鯽魚、雞肉輪著吃。肝火旺的毛孩可用鴨肉平衡。`;
+  } else if ((month === 4 && day >= 5) || (month === 4 && day < 20)) {
+    solarTerm = '清明 / 穀雨';
+    seasonTip = `<strong>🌱 清明至穀雨（${month}月）</strong>：濕漸重，宜健脾化濕。鯽魚、兔肉優先；少量薏仁水可輔助祛濕。已偏熱的毛孩可以開始轉向鴨肉。`;
+  } else if ((month === 4 && day >= 20) || (month === 5 && day < 6)) {
+    solarTerm = '穀雨 / 立夏';
+    seasonTip = `<strong>🌿 穀雨至立夏（${month}月）</strong>：春夏交替，養心氣。雞肉（補心陽）仍佳，可開始加入鴨肉、魚類。「夏天要多吃補益心氣的食物」——徐文兵。`;
+  } else if ((month === 5 && day >= 6) || (month === 5 && day < 21)) {
+    solarTerm = '立夏 / 小滿';
+    seasonTip = `<strong>☀️ 立夏至小滿（${month}月）</strong>：心火當令，宜補心氣。禽類（雞、鴿）補心陽，但偏熱毛孩改用鴨肉。魚類滋陰，天漸熱可增加比例。`;
+  } else if ((month === 5 && day >= 21) || (month === 6 && day < 6)) {
+    solarTerm = '小滿 / 芒種';
+    seasonTip = `<strong>☀️ 小滿至芒種（${month}月）</strong>：濕熱漸重。鯽魚湯利濕首選，鴨肉清熱養陰。減少羊肉等溫熱肉食，避免助長濕熱。`;
+  } else if ((month === 6 && day >= 6) || (month === 6 && day < 21)) {
+    solarTerm = '芒種 / 夏至';
+    seasonTip = `<strong>☀️ 芒種至夏至（${month}月）</strong>：全年濕氣最重的時段。健脾化濕為首要——鯽魚、鯉魚、兔肉優先。鮮食可加少量薑溫脾。「雞補陽、鴨滋陰」看體質選。`;
+  } else if ((month === 6 && day >= 21) || (month === 7 && day < 7)) {
+    solarTerm = '夏至 / 小暑';
+    seasonTip = `<strong>☀️ 夏至至小暑（${month}月）</strong>：陽極陰生，保護心陰。鴨肉、瘦豬肉為主。「小暑黃鱔賽人參」——鱔魚溫性補氣，適合氣虛毛孩。偏熱體質以魚為主。`;
+  } else if ((month === 7 && day >= 7) || (month === 7 && day < 23)) {
+    solarTerm = '小暑 / 大暑';
+    seasonTip = `<strong>☀️ 小暑至大暑（${month}月）</strong>：長夏養脾。脾胃最弱的時段——飲食宜清淡好消化。鯽魚湯、鴨肉、瘦豬肉為主。飲水別過量，渴了再喝、喝溫的。`;
+  } else if ((month === 7 && day >= 23) || (month === 8 && day < 7)) {
+    solarTerm = '大暑 / 立秋';
+    seasonTip = `<strong>🌾 大暑至立秋（${month}月）</strong>：暑濕仍重，秋意初起。持續健脾利濕（鯽魚、兔肉），開始少量加入潤肺食材（豬肉、牛奶）為秋季做準備。`;
+  } else if ((month === 8 && day >= 7) || (month === 8 && day < 23)) {
+    solarTerm = '立秋 / 處暑';
+    seasonTip = `<strong>🍂 立秋至處暑（${month}月）</strong>：秋燥初起，養陰潤燥開始。豬肉涼潤適合此時，烏雞滋陰養血。減少煎炸烹調方式，燉煮為佳。`;
+  } else if ((month === 8 && day >= 23) || (month === 9 && day < 8)) {
+    solarTerm = '處暑 / 白露';
+    seasonTip = `<strong>🍂 處暑至白露（${month}月）</strong>：餘暑漸消，涼意漸起。飲食可從清淡轉為平補——牛肉平補脾胃回歸主力，鴨肉仍佳但偏寒毛孩可減量。`;
+  } else if ((month === 9 && day >= 8) || (month === 9 && day < 23)) {
+    solarTerm = '白露 / 秋分';
+    seasonTip = `<strong>🍂 白露至秋分（${month}月）</strong>：燥氣漸盛。滋陰潤燥為重——豬肉、烏雞、牛奶優先。偏燥的毛孩（皮膚乾、毛粗）可增加涼潤食材比例。`;
+  } else if ((month === 9 && day >= 23) || (month === 10 && day < 8)) {
+    solarTerm = '秋分 / 寒露';
+    seasonTip = `<strong>🍂 秋分至寒露（${month}月）</strong>：秋涼加深。平補脾肺——牛肉回歸核心，雞肉可開始增量。魚類比例可減少，轉向陸地畜禽。`;
+  } else if ((month === 10 && day >= 8) || (month === 10 && day < 24)) {
+    solarTerm = '寒露 / 霜降';
+    seasonTip = `<strong>🍂 寒露至霜降（${month}月）</strong>：深秋轉冬。溫補漸入——雞肉、牛肉為主力，偏寒毛孩可少量加入羊肉。仍需注意潤燥，別完全停掉涼潤食材。`;
+  } else if ((month === 10 && day >= 24) || (month === 11 && day < 7)) {
+    solarTerm = '霜降 / 立冬';
+    seasonTip = `<strong>❄️ 霜降至立冬（${month}月）</strong>：冬藏開始。「天上飛的偏熱」——雞肉、鴿肉補陽氣，牛肉補脾胃，偏寒毛孩可正式加入羊肉溫腎。`;
+  } else if ((month === 11 && day >= 7) || (month === 11 && day < 22)) {
+    solarTerm = '立冬 / 小雪';
+    seasonTip = `<strong>❄️ 立冬至小雪（${month}月）</strong>：溫陽補腎為主。羊肉、雞肉、牛肉三大溫性肉食輪著來。偏熱毛孩仍以鴨肉、豬肉為主，不必跟風溫補。`;
+  } else if ((month === 11 && day >= 22) || (month === 12 && day < 7)) {
+    solarTerm = '小雪 / 大雪';
+    seasonTip = `<strong>❄️ 小雪至大雪（${month}月）</strong>：寒氣漸盛。雞湯、羊肉湯是最好的暖身食療。鮮食可加少量薑增溫。偏熱毛孩持平即可，不必加大溫補力度。`;
+  } else if ((month === 12 && day >= 7) || (month === 12 && day < 22)) {
+    solarTerm = '大雪 / 冬至';
+    seasonTip = `<strong>❄️ 大雪至冬至（${month}月）</strong>：全年最冷時段。溫補達到高峰——羊肉燉蘿蔔、雞湯、牛骨湯都佳。但注意：「溫補不是越多越好」，觀察毛孩反應隨時調整。`;
+  } else if ((month === 12 && day >= 22) || (month === 1 && day < 6)) {
+    solarTerm = '冬至 / 小寒';
+    seasonTip = `<strong>❄️ 冬至至小寒（${month}月）</strong>：陰極陽生。持續溫補但開始收斂——牛肉平補最穩，雞肉補陽適度，偏熱毛孩可以減少羊肉。`;
+  } else if ((month === 1 && day >= 6) || (month === 1 && day < 20)) {
+    solarTerm = '小寒 / 大寒';
+    seasonTip = `<strong>❄️ 小寒至大寒（${month}月）</strong>：全年最深寒。延續冬季溫補路線——雞肉、牛肉、羊肉為主。臨近春天，可開始準備轉向平肝（鯽魚、豬肝）。`;
+  } else {
+    solarTerm = '大寒 / 立春';
+    seasonTip = `<strong>🌱 大寒至立春（${month}月）</strong>：冬春交替。溫補漸減、平肝漸入——牛肉、鯽魚過渡。偏寒毛孩別急著停掉溫性食材，慢慢轉換。`;
+  }
+
+  h += `<div class="food-season">
+    <div class="food-season-title">🗓️ 節氣飲食（${solarTerm}）</div>
+    <div style="font-size:12.5px;line-height:1.6;color:var(--text-light)">${seasonTip}</div>
+  </div>`;
+
+  // Internal organ tip
+  h += `<div class="food-note">
+    <strong>💡 內臟使用提醒</strong><br>
+    肝類（豬肝、雞肝、羊肝）補血效果好，但維生素 A 含量高，<strong>每週餵食 1-2 次為限</strong>。骨頭類必須燉軟或磨粉，禁餵雞骨碎片。所有食療食材需煮熟、放至室溫再餵食，<strong>禁加鹽、糖、醬油等調味</strong>。
+  </div>`;
+
+  h += `<div style="text-align:center;margin-top:12px;font-size:11px;color:var(--text-muted);font-style:italic">
+    食療建議參考《肉食療法》劉建和主編 ·《徐文兵講美食課》· 中獸醫臨床經驗整合
+  </div>`;
+
+  h += `</div>`; // food-rx end
+
+  return h;
+}
+
+function showResult() {
+  if (answers[curQ] === null) return;
+  document.getElementById('quiz-page').classList.add('hidden');
+  document.getElementById('result-page').classList.remove('hidden');
+
+  const sc = calcScores();
+  let html = `<div class="rp">`;
+
+  // Header
+  html += `<div class="r-head">
+    <div class="r-name">${petName} 的體質觀察結果</div>
+    <div class="r-label">Constitution Observation Report</div>
+  </div>`;
+
+  // Radar chart
+  html += `<div class="chart-card" id="chart-card">
+    <h3>✦ 體質四維圖 ✦</h3>
+    <div class="chart-wrap"><canvas id="radar-chart" width="300" height="300"></canvas></div>`;
+
+  // Cold-hot bar
+  const chPct = ((sc.coldHot + 5) / 10 * 100);
+  html += `<div class="ch-bar-wrap">
+    <div class="ch-bar-label">寒 ← → 熱 當下狀態</div>
+    <div class="ch-bar-outer"><div class="ch-bar-marker" style="left:${chPct}%"></div></div>
+    <div class="ch-bar-labels"><span>偏寒</span><span>平衡</span><span>偏熱</span></div>
+  </div>`;
+  html += `</div>`; // chart-card end
+
+  // Signal counts — removed per user feedback (reference value low for pet owners)
+
+  // Contradiction alerts
+  if (sc.contradictions.length > 0) {
+    html += `<div class="warn-card">
+      <div class="warn-icon">⚠️</div>
+      <div class="warn-title">偵測到矛盾訊號</div>
+      <div class="warn-line"></div>`;
+
+    const rules = {
+      R1: { title:'內外溫差不一致', desc:'四肢末端偏涼，但軀幹摸起來偏熱。這在中醫叫做「真寒假熱」或「真熱假寒」——表面看到的和身體裡面的可能相反。建議給中獸醫師做進一步的觸診和脈診確認。' },
+      R2: { title:'行為偏好矛盾', desc:'牠有時候找暖的地方、有時候又跑去涼的地方，休息偏好不固定。這可能代表身體的寒熱正在拉鋸，不是單純的偏寒或偏熱。' },
+      R4: { title:'虛熱錯雜', desc:'看起來有一些「偏熱」的跡象（分泌物偏黃、口氣等），但同時精神和活力又偏弱。這種「看起來熱、底子卻虛」的組合，通常需要專業的虛實判讀。' },
+      R5: { title:'上下焦不一致', desc:'身體上半部和下半部的寒熱表現不太一致。這種情況在中醫叫「上熱下寒」或「上下焦寒熱不一」，需要更細緻的辨別。' },
+    };
+
+    sc.contradictions.forEach(r => {
+      const rule = rules[r];
+      if (rule) {
+        html += `<div class="warn-item"><strong>${rule.title}</strong><br>${rule.desc}</div>`;
+      }
+    });
+
+    html += `<div class="warn-note">💡 矛盾訊號不代表「不好」，而是代表身體的狀況比較複雜，不是單一方向能判定的。<br>這正是需要交給中獸醫師來做精確判讀的部分。</div>`;
+    html += `</div>`;
+  }
+
+  // ====== ENRICHED AXIS INTERPRETATIONS ======
+  html += `<div class="summary-card">
+    <div class="sec-title">💡 觀察重點與居家建議</div>
+    <div class="sec-line"></div>`;
+
+  // ── ENERGY / 活力 ──
+  const eLevel = sc.energy < 1.8 ? 'low' : sc.energy > 3.8 ? 'high' : 'ok';
+  if (eLevel === 'low') {
+    html += `<div class="axis-insight" style="background:#FDF8EE">
+      <strong>活力偏弱</strong>
+      <p>${petName} 的精神和反應看起來比較不足。中獸醫會把這跟「氣」不夠充足聯繫在一起——簡單說，就是身體的「電池電量偏低」。</p>
+      <div class="tip-block">
+        <div class="tip-row"><span class="tip-icon">🥘</span><div><strong>飲食方向</strong><br>優先選容易消化、溫性的食材：雞肉、南瓜、山藥、紅棗、地瓜。避免生冷、寒涼食物。少量多餐比一次吃很多更好。</div></div>
+        <div class="tip-row"><span class="tip-icon">🤲</span><div><strong>居家按摩</strong><br>每天花 3-5 分鐘，用掌心溫柔地沿著背脊（督脈）從頭到尾順撫。再用指腹輕揉後腿內側的「足三里」位置（膝蓋下方約三指寬），幫助補氣。力道要輕柔，牠舒服就好。</div></div>
+        <div class="tip-row"><span class="tip-icon">👀</span><div><strong>留意觀察</strong><br>如果同時食慾下降、大便偏軟、比以前更怕冷，建議安排中獸醫門診評估。這三個一起出現通常代表「氣虛」的程度比較明顯。</div></div>
+      </div>
+    </div>`;
+  } else if (eLevel === 'high') {
+    html += `<div class="axis-insight" style="background:#FDF8EE">
+      <strong>活力旺盛</strong>
+      <p>${petName} 精力充沛！但如果同時有偏熱的跡象（容易喘、找涼處、分泌物偏黃），要留意是不是「火」太旺。</p>
+      <div class="tip-block">
+        <div class="tip-row"><span class="tip-icon">🥘</span><div><strong>飲食方向</strong><br>可以適度搭配平性或涼性食材來平衡，例如鴨肉、白蘿蔔、絲瓜、薏仁。不需要刻意壓制活力，重點是避免太多溫補。</div></div>
+        <div class="tip-row"><span class="tip-icon">🤲</span><div><strong>居家按摩</strong><br>輕揉耳根和頭頂（百會穴），有助於安神。如果牠容易亢奮不好入睡，可以在睡前順撫耳朵外緣，多數毛孩會慢慢放鬆。</div></div>
+      </div>
+    </div>`;
+  } else {
+    html += `<div class="axis-insight" style="background:#FDF8EE">
+      <strong>活力正常</strong>
+      <p>${petName} 的精神和反應都在正常範圍。繼續保持目前的作息、運動和飲食即可。</p>
+      <div class="tip-block">
+        <div class="tip-row"><span class="tip-icon">🤲</span><div><strong>日常保養</strong><br>每天順撫背脊 2-3 分鐘是最簡單的保養——促進氣血循環，也是很好的親子互動時間。</div></div>
+      </div>
+    </div>`;
+  }
+
+  // ── BODY CONDITION / 體態 ──
+  const sLevel = sc.bodyCondition < 1.8 ? 'low' : sc.bodyCondition > 3.8 ? 'high' : 'ok';
+  if (sLevel === 'low') {
+    html += `<div class="axis-insight" style="background:#EEF4EC">
+      <strong>體態偏虛</strong>
+      <p>${petName} 的毛髮、皮膚或肌肉狀態有消耗跡象——可能是毛比較乾、摸得到骨架、皮屑多。中獸醫會把這跟身體的「陰」和「血」是否充足聯繫起來。</p>
+      <div class="tip-block">
+        <div class="tip-row"><span class="tip-icon">🥘</span><div><strong>飲食方向</strong><br>補養為主：豬肉或鱸魚（滋陰）、蛋黃（補血）、黑芝麻（潤燥）、枸杞少量。蛋白質攝取要足夠，搭配好油脂（如魚油）幫助皮毛修復。</div></div>
+        <div class="tip-row"><span class="tip-icon">🤲</span><div><strong>居家按摩</strong><br>輕柔按揉腹部（順時針），幫助脾胃吸收養分。再用指腹揉「血海」穴位（後腿膝蓋內側上方），有助於養血。每天 3-5 分鐘即可。</div></div>
+        <div class="tip-row"><span class="tip-icon">👀</span><div><strong>留意觀察</strong><br>注意毛髮光澤變化——如果開始恢復光澤，代表養分有在補回來。如果持續乾燥甚至掉毛範圍擴大，建議就醫做更完整的評估。</div></div>
+      </div>
+    </div>`;
+  } else if (sLevel === 'high') {
+    html += `<div class="axis-insight" style="background:#EEF4EC">
+      <strong>體態飽滿</strong>
+      <p>${petName} 的身體看起來很充實——毛有光澤、肌肉適中、眼睛有神。目前的照顧做得很好！</p>
+      <div class="tip-block">
+        <div class="tip-row"><span class="tip-icon">🥘</span><div><strong>維持方向</strong><br>目前飲食配方可以持續，不需要額外補充。如果圓潤度偏高（BCS 偏胖），可以微調蛋白質比例稍高、碳水稍降。</div></div>
+        <div class="tip-row"><span class="tip-icon">🤲</span><div><strong>居家按摩</strong><br>全身撫觸就是最好的保養。特別留意手滑過時有沒有摸到新的硬塊或異常——日常撫摸其實是最好的居家健檢。</div></div>
+      </div>
+    </div>`;
+  } else {
+    html += `<div class="axis-insight" style="background:#EEF4EC">
+      <strong>體態尚可</strong>
+      <p>${petName} 的毛髮和身體狀態大致正常，沒有明顯的消耗或過剩跡象。</p>
+      <div class="tip-block">
+        <div class="tip-row"><span class="tip-icon">🤲</span><div><strong>日常保養</strong><br>定期梳毛除了去除廢毛，也是觀察皮膚健康的好機會。如果注意到皮屑增加或毛質變化，就是身體在提前發出訊號。</div></div>
+      </div>
+    </div>`;
+  }
+
+  // ── METABOLISM / 代謝 ──
+  const mLevel = sc.metabolism < 1.8 ? 'low' : sc.metabolism > 3.8 ? 'high' : 'ok';
+  if (mLevel === 'low') {
+    html += `<div class="axis-insight" style="background:#ECF2F5">
+      <strong>代謝偏滯</strong>
+      <p>${petName} 的排泄或分泌物有些「不太通暢」的跡象——便便偏黏、體味變重、或眼耳分泌物增加。中獸醫會把這跟「濕」和「痰」的累積聯繫起來。</p>
+      <div class="tip-block">
+        <div class="tip-row"><span class="tip-icon">🥘</span><div><strong>飲食方向</strong><br>利濕健脾為主：薏仁、茯苓（可加在鮮食裡少量）、冬瓜、白蘿蔔。減少油膩、高碳水的食物。如果便便偏黏，可以試試南瓜搭配少許薑。</div></div>
+        <div class="tip-row"><span class="tip-icon">🤲</span><div><strong>居家按摩</strong><br>順時針揉腹部是幫助消化最直接的方式。另外可以輕揉後腿外側的「豐隆」穴位（小腿外側中間），中醫認為它是化痰祛濕的要穴。</div></div>
+        <div class="tip-row"><span class="tip-icon">👀</span><div><strong>留意觀察</strong><br>下雨天或潮濕的日子，牠是不是特別懶、特別沒精神？如果是，這更加印證了「濕」的判斷。同時注意便便是不是會沾地板——這是濕氣偏重的典型表現。</div></div>
+      </div>
+    </div>`;
+  } else if (mLevel === 'high') {
+    html += `<div class="axis-insight" style="background:#ECF2F5">
+      <strong>代謝順暢</strong>
+      <p>${petName} 的排泄和代謝看起來通暢——便便成形、體味不重、分泌物不多。身體的「流通」做得很好！</p>
+      <div class="tip-block">
+        <div class="tip-row"><span class="tip-icon">🥘</span><div><strong>維持方向</strong><br>目前飲食配方有效，持續即可。適量的蔬菜纖維有助於維持腸道通暢。</div></div>
+      </div>
+    </div>`;
+  } else {
+    html += `<div class="axis-insight" style="background:#ECF2F5">
+      <strong>代謝大致正常</strong>
+      <p>${petName} 的代謝狀態沒有明顯的阻塞跡象。日常保持充足飲水和適量運動就好。</p>
+    </div>`;
+  }
+
+  // ── ABDOMINAL / 腹部觀察 ──
+  const lLevel = sc.accumulation > 3.5 ? 'high' : sc.accumulation < 1.5 ? 'low' : 'ok';
+  if (lLevel === 'high') {
+    html += `<div class="axis-insight" style="background:#F2EEF4">
+      <strong>腹部負擔偏多</strong>
+      <p>${petName} 的身體可能有些「東西塞住了」——體重增加、肚子摸起來脹硬、排泄不太順。中獸醫會說身體的「實」比較明顯，需要幫忙疏通。</p>
+      <div class="tip-block">
+        <div class="tip-row"><span class="tip-icon">🥘</span><div><strong>飲食方向</strong><br>疏通為主：白蘿蔔（下氣通腸）、山楂（消食化積）、陳皮（理氣健脾）。減少高熱量零食和過度餵食。少量多餐比一大碗好。</div></div>
+        <div class="tip-row"><span class="tip-icon">🤲</span><div><strong>居家按摩</strong><br>順時針揉腹是最重要的——幫助腸胃蠕動。也可以從胸口往腹部方向輕推，像在幫牠「順氣」一樣。如果牠願意翻肚子，每天做 5 分鐘。</div></div>
+        <div class="tip-row"><span class="tip-icon">👀</span><div><strong>留意觀察</strong><br>注意便便量和頻率有沒有變化、肚子有沒有越來越脹。如果按壓腹部牠有抗拒或疼痛反應，要儘快就醫。</div></div>
+      </div>
+    </div>`;
+  } else if (lLevel === 'low') {
+    html += `<div class="axis-insight" style="background:#F2EEF4">
+      <strong>身體偏「空」</strong>
+      <p>${petName} 的身體不是「塞太多」，反而是偏空虛——肚子按下去軟綿綿的、回彈很慢。這通常伴隨著活力或體態也偏弱。</p>
+      <div class="tip-block">
+        <div class="tip-row"><span class="tip-icon">🥘</span><div><strong>飲食方向</strong><br>補益為主，但不是猛吃——而是挑好消化、營養密度高的食材：雞湯、蛋黃、山藥泥。先把脾胃養好，營養才吸收得進去。</div></div>
+        <div class="tip-row"><span class="tip-icon">🤲</span><div><strong>居家按摩</strong><br>溫柔地揉腹部中央（中脘穴附近），力道要很輕。搭配撫摸背脊，幫助身體慢慢找回元氣。</div></div>
+      </div>
+    </div>`;
+  } else {
+    html += `<div class="axis-insight" style="background:#F2EEF4">
+      <strong>腹部觀察正常</strong>
+      <p>${petName} 沒有明顯的腹部異常或空虛感。腹部觸感正常，消化排泄也還行。</p>
+    </div>`;
+  }
+
+  // ── COLD-HOT / 寒熱（大幅強化）──
+  const chLevel = sc.coldHot < -1.5 ? 'cold' : sc.coldHot > 1.5 ? 'hot' : 'ok';
+  const hasCH_contradiction = sc.contradictions.some(r => r === 'R1' || r === 'R2' || r === 'R4');
+
+  html += `<div class="axis-insight ch-insight" style="background:linear-gradient(135deg, #FEF0EC 0%, #EEF0FE 100%);border:1px solid rgba(200,160,130,0.15)">
+    <div style="font-size:13px;color:var(--text-muted);letter-spacing:1.5px;margin-bottom:6px;font-family:'Playfair Display',serif">Cold-Hot Assessment</div>`;
+
+  if (hasCH_contradiction) {
+    html += `<strong>⚡ 寒熱交錯</strong>
+      <p>${petName} 的身上同時出現了「偏寒」和「偏熱」的訊號——這不是矛盾，而是身體的狀況比較複雜。</p>
+      <p style="font-size:13px;color:var(--text-light);line-height:1.7;margin:8px 0">中獸醫把這叫做「寒熱錯雜」或「真假寒熱」。打個比方：就像一台冷氣同時吹暖氣和冷氣——不是機器壞了，而是內部的調節出了問題。這種情況光靠飼主觀察很難準確判斷根源，<strong>建議讓中獸醫師做進一步的觸診和脈診</strong>。</p>
+      <div class="tip-block">
+        <div class="tip-row"><span class="tip-icon">🥘</span><div><strong>飲食方向</strong><br>寒熱交錯時，飲食策略是「不偏不倚」——先避開太寒和太熱的食材。以平性食物為主：豬肉、米飯、馬鈴薯、白菜。等中獸醫師釐清「真寒假熱」還是「真熱假寒」後，再調整方向。</div></div>
+        <div class="tip-row"><span class="tip-icon">🤲</span><div><strong>居家按摩</strong><br>寒熱交錯時最安全的按摩是「平衡手法」——用掌心（不是指尖）溫柔順撫背脊全段，速度慢、力道輕，每天 5 分鐘。<strong>不要只揉某一個穴位</strong>，因為在判斷清楚前，局部刺激可能幫倒忙。</div></div>
+        <div class="tip-row"><span class="tip-icon">🌡️</span><div><strong>居家觀察紀錄</strong><br>在就醫前，可以幫忙記錄以下資訊給獸醫師參考：<br>
+          ① 耳朵和腳掌的溫度（早上 vs 傍晚有沒有差異？）<br>
+          ② 喝水量和喝水溫度偏好（搶著喝？還是要叫才喝？）<br>
+          ③ 休息位置偏好有沒有一天之內變來變去<br>
+          ④ 分泌物（眼屎、耳垢）的顏色和質地</div></div>
+        <div class="tip-row"><span class="tip-icon">⚠️</span><div><strong>重要提醒</strong><br>寒熱交錯的毛孩，「補」和「瀉」都要特別謹慎。不建議自行使用溫補食材（如當歸、肉桂）或清熱食材（如綠豆、苦瓜），請先諮詢中獸醫師。</div></div>
+      </div>`;
+  } else if (chLevel === 'cold') {
+    html += `<strong>❄️ 當下偏寒</strong>
+      <p>${petName} 目前的觀察傾向「身體比較冷」——喜歡暖處、四肢末端偏涼、喝水量偏少、精神可能也比較沉。</p>
+      <div class="tip-block">
+        <div class="tip-row"><span class="tip-icon">🥘</span><div><strong>飲食方向</strong><br>溫性食材為主：雞肉（溫性蛋白質首選）、南瓜、地瓜、少量薑（可加在鮮食裡煮過）、羊肉（偏溫但適合明顯畏寒的毛孩）。<br>⚠️ 避免生冷食物、冰水、寒涼水果（如西瓜、水梨）。</div></div>
+        <div class="tip-row"><span class="tip-icon">🤲</span><div><strong>居家按摩</strong><br>① <strong>溫掌撫背</strong>：先搓熱雙手，用掌心沿背脊從頭到尾順撫 20 次，幫助溫通督脈<br>② <strong>揉命門</strong>：腰部脊椎中線的凹陷處，用掌根溫柔畫圈揉，補腎陽<br>③ <strong>揉足三里</strong>：後腿膝蓋下方三指寬處，用拇指輕按揉 30 秒/側，補氣暖身<br>④ <strong>搓耳朵</strong>：從耳根到耳尖來回輕搓，耳朵上有很多穴位，搓到微溫即可</div></div>
+        <div class="tip-row"><span class="tip-icon">🏠</span><div><strong>居家照護</strong><br>• 睡窩可以加一條毛毯或放暖暖包（隔層布）<br>• 雨天或寒流時減少外出，散步選午後溫暖時段<br>• 洗澡後一定要立刻吹全乾，潮濕會加重寒氣<br>• 如果是短毛犬，冬天外出可以穿件薄衣服</div></div>
+        <div class="tip-row"><span class="tip-icon">👀</span><div><strong>留意觀察</strong><br>如果偏寒同時伴隨大便偏軟或稀、尿量多但色淡、怎麼吃都不太長肉，代表「脾陽虛」的可能性較高，建議就醫評估。</div></div>
+      </div>`;
+  } else if (chLevel === 'hot') {
+    html += `<strong>🔥 當下偏熱</strong>
+      <p>${petName} 目前的觀察傾向「身體比較熱」——喜歡找涼處趴、喝水量增加、可能容易喘、眼屎或耳垢偏黃偏稠。</p>
+      <div class="tip-block">
+        <div class="tip-row"><span class="tip-icon">🥘</span><div><strong>飲食方向</strong><br>涼性/平性食材為主：鴨肉（涼性蛋白質首選）、白蘿蔔、冬瓜、絲瓜、薏仁水（利濕清熱）、少量菊花水。<br>⚠️ 避免溫補食材（如羊肉、當歸、鹿茸）和油炸零食。如果口氣重，可以加少許蓮藕或白木耳。</div></div>
+        <div class="tip-row"><span class="tip-icon">🤲</span><div><strong>居家按摩</strong><br>① <strong>清肝揉太衝</strong>：後腳掌第1、2趾骨之間的凹陷處，輕揉 30 秒/側，疏肝清熱<br>② <strong>揉耳尖放血點</strong>：耳朵尖端輕捏 10 秒，中醫認為耳尖可洩熱（不是真的放血！只是按壓）<br>③ <strong>涼掌覆額</strong>：把手掌放涼（可以沾點水），輕放在頭頂「百會」附近 30 秒，幫助降火<br>④ <strong>腹部順揉</strong>：偏熱的毛孩腹部通常比較緊繃，順時針輕揉幫助鬆解</div></div>
+        <div class="tip-row"><span class="tip-icon">🏠</span><div><strong>居家照護</strong><br>• 確保隨時有乾淨的飲水——偏熱體質的毛孩需要更多水分<br>• 提供涼爽的休息空間（磁磚地板、涼墊）<br>• 避免中午最熱時段外出散步<br>• 短吻犬種要特別注意散熱，室溫建議不超過 26°C</div></div>
+        <div class="tip-row"><span class="tip-icon">👀</span><div><strong>留意觀察</strong><br>如果偏熱同時伴隨皮膚紅癢、反覆耳道感染、便便偏硬偏臭，可能是「濕熱」而非單純的熱。這種狀況需要清熱同時利濕，建議讓中獸醫師判斷。</div></div>
+      </div>`;
+  } else {
+    html += `<strong>⚖️ 寒熱平衡</strong>
+      <p>${petName} 目前沒有明顯的偏寒或偏熱傾向，身體的溫度調節功能看起來正常。</p>
+      <div class="tip-block">
+        <div class="tip-row"><span class="tip-icon">🥘</span><div><strong>飲食方向</strong><br>維持均衡飲食即可，不需要刻意偏溫或偏涼。可以根據季節微調：夏天多一點平涼食材（如鴨肉、絲瓜），冬天多一點溫性食材（如雞肉、南瓜）。</div></div>
+        <div class="tip-row"><span class="tip-icon">🤲</span><div><strong>日常保養</strong><br>定期的全身撫摸和背脊順撫就是最好的保養。順便感受一下四肢末端的溫度——如果哪天突然變涼或變熱，就是身體在發出訊號。</div></div>
+      </div>`;
+  }
+  html += `</div>`; // ch-insight end
+
+  // ── ABDOMINAL OBSERVATION / 腹部觀察 ──
+  if (sc.abdFlags.length > 0) {
+    html += `<div class="axis-insight" style="background:linear-gradient(135deg, #FEF5EC 0%, #ECF5EE 100%);border:1px solid rgba(180,160,120,0.15)">
+      <div style="font-size:13px;color:var(--text-muted);letter-spacing:1.5px;margin-bottom:6px;font-family:'Playfair Display',serif">Abdominal Observation</div>
+      <strong>🫄 腹部觀察提示</strong>
+      <p>你在觸摸 ${petName} 的肚子時觀察到一些值得注意的訊號：</p>
+      <div class="tip-block">`;
+
+    if (sc.abdFlags.includes('abd_lump')) {
+      html += `<div class="tip-row"><span class="tip-icon">🧱</span><div><strong>局部硬塊感</strong><br>摸到某個位置特別硬或有塊狀物。在中醫腹診中，這可能對應「積聚」——有形之物停留在腹中。<br><strong>建議</strong>：記下位置（上腹/肚臍旁/下腹）和大小，就診時告訴醫師。如果塊狀物會隨呼吸移動、推得動，通常比固定不動的更需要留意。</div></div>`;
+    }
+    if (sc.abdFlags.includes('abd_water')) {
+      html += `<div class="tip-row"><span class="tip-icon">🌊</span><div><strong>腹內液體晃動感</strong><br>按壓時感覺到液體在腹中晃動。日本漢方腹診稱之為「振水音」，通常代表體內有「水飲」停滯——消化液沒有正常代謝。<br><strong>建議</strong>：如果同時食慾不好、容易嘔吐或大便偏稀，建議儘快就醫評估。健脾利水是主要方向。</div></div>`;
+    }
+    if (sc.abdFlags.includes('abd_cold')) {
+      html += `<div class="tip-row"><span class="tip-icon">❄️</span><div><strong>腹部偏涼（尤其下腹）</strong><br>下腹部摸起來比上腹涼，中醫稱為「下焦虛寒」或「臍下不仁」。腹診中，這常見於「腎陽不足」的動物。<br><strong>建議</strong>：避免讓 ${petName} 趴在冰冷地板上，睡窩可加保暖墊。飲食以溫性為主。如果同時精神差、大便稀、尿多色淡，需要就醫。</div></div>`;
+    }
+    if (sc.abdFlags.includes('abd_hot')) {
+      html += `<div class="tip-row"><span class="tip-icon">🔥</span><div><strong>腹部偏熱</strong><br>肚皮摸起來溫度偏高。腹診中，腹壁溫度偏高可能代表內有鬱熱，或局部有炎症反應。<br><strong>建議</strong>：觀察是否伴隨食慾亢進、口渴多飲、便秘或便臭。如果持續偏熱且有其他不適，建議就醫。</div></div>`;
+    }
+    if (sc.abdFlags.includes('abd_rumble')) {
+      html += `<div class="tip-row"><span class="tip-icon">🔊</span><div><strong>腸鳴音明顯</strong><br>肚子裡咕嚕咕嚕叫得很頻繁或很大聲。中醫稱為「腹中雷鳴」，常見於脾胃虛寒或水飲內停。<br><strong>建議</strong>：如果不伴隨疼痛（不縮肚子），多半是消化功能偏弱，溫脾即可。如果伴隨腹痛（會縮肚子或抗拒），需要就醫評估。飲食避免生冷。</div></div>`;
+    }
+    if (sc.abdFlags.includes('abd_tender')) {
+      html += `<div class="tip-row"><span class="tip-icon">⚡</span><div><strong>局部壓痛</strong><br>${petName} 被碰到某個位置會縮肚子或回頭看。腹診中，壓痛是非常重要的線索——痛的位置幫助醫師判斷是哪個臟腑的問題。<br><strong>建議</strong>：記下哪個位置碰了會不舒服（上腹正中 / 肋骨下方 / 肚臍旁 / 下腹）。不要反覆按壓，告訴醫師即可。</div></div>`;
+    }
+    if (sc.abdFlags.includes('abd_resist')) {
+      html += `<div class="tip-row"><span class="tip-icon">🚨</span><div><strong>腹部明顯拒按</strong><br>${petName} 非常抗拒被碰肚子，這在中醫叫做「拒按」。拒按通常代表腹中有「實邪」——可能是積食、積液、或急性炎症。<br><strong>⚠️ 如果是突然出現的拒按，尤其伴隨食慾下降、嘔吐或精神差，建議儘快就醫。</strong></div></div>`;
+    }
+
+    html += `<div class="tip-row"><span class="tip-icon">💡</span><div><strong>居家腹部觀察小技巧</strong><br>每天撫摸 ${petName} 的時候，順便用手掌從胸口慢慢滑到下腹——這就是最簡單的「居家腹診」。熟悉了正常的感覺，哪天有變化你一定會發現。日本漢方醫家說：「先診平生未病之腹狀」——了解正常，才能發現異常。</div></div>`;
+    html += `</div></div>`;
+  }
+
+  html += `</div>`; // summary-card end
+
+  // ====== FOOD THERAPY SECTION (from 肉食食療知識庫) ======
+  html += buildFoodTherapySection(sc);
+
+  // ====== KNOWLEDGE SOURCES ======
+  html += `<div class="tip-card" style="background:linear-gradient(135deg,#f8f6f0 0%,#f0ede4 100%);border-left:3px solid var(--primary)">
+    <div style="font-size:13px;font-weight:600;color:var(--primary);margin-bottom:8px">📚 這份指南的知識基礎</div>
+    <div style="font-size:12px;line-height:1.8;color:var(--text-light)">
+      本工具的觀察邏輯與評估框架，融合了以下知識體系：<br>
+      <span style="color:var(--text-main)">◆ TCVM Principles & Practice（Xie / Preast）</span>— 臟腑辨證與體質分型參照<br>
+      <span style="color:var(--text-main)">◆ 李文瑞《傷寒派腹診》＋《腹証奇覽》</span>— 腹部觀察題的理論來源<br>
+      <span style="color:var(--text-main)">◆ 劉建和《肉食療法》</span>— 食療建議的性味歸經與配伍依據<br>
+      <span style="color:var(--text-main)">◆ 徐文兵《講美食課》</span>— 食材三分法、芳香化濕、節氣飲食理論<br>
+      <span style="color:var(--text-main)">◆ 拾貳寵動物醫院臨床經驗</span>— 數百例中獸醫門診的實戰校準
+    </div>
+  </div>`;
+
+  // ====== DISCLAIMER ======
+  html += `<div class="tip-card" style="background:#faf9f6;border:1px solid #e8e4dc">
+    <div style="font-size:13px;font-weight:600;color:var(--primary);margin-bottom:6px">🤝 溫馨提醒</div>
+    <div style="font-size:12.5px;line-height:1.8;color:var(--text-light)">
+      這份結果是根據你的居家觀察產出的「<strong>體質傾向參考</strong>」，幫助你在日常飲食與照護上多一份方向感。<br><br>
+      真正的體質判讀，需要中獸醫師透過<strong>問診、望診、觸診、脈診</strong>等綜合評估才能確立。每隻毛孩的狀況都是獨特的，醫師會根據實際情況做出最適合的判斷。<br><br>
+      如果 ${petName} 有正在治療的疾病、反覆出現的健康問題、或持續不適的症狀，建議搭配中獸醫師的實際診療，效果會更完整喔。<br><br>
+      你可以把這份觀察紀錄想成是「<strong>多了一份參考資料</strong>」——帶著它去看診，能幫助醫師更快了解 ${petName} 在家的狀態，讓溝通更順暢。<br><br>
+      <span style="font-size:11.5px;color:var(--text-muted)">本工具僅供居家觀察參考，不能取代專業診斷與治療。</span>
+    </div>
+  </div>`;
+
+  // CTA — share + brand redirect
+  html += `<div class="cta-card">
+    <p>覺得這份結果有參考價值嗎？<br>分享給同樣關心毛孩健康的朋友吧 🐾</p>
+    <div class="btn-row">
+      <button class="btn bp" onclick="genShareCard()">分享結果</button>
+      <button class="btn bs" onclick="location.reload()">再測一次</button>
+    </div>
+  </div>`;
+
+  // Brand redirect
+  html += `<div style="text-align:center;margin:14px 0 4px">
+    <p style="font-size:12.5px;color:var(--text-light);line-height:1.7;margin-bottom:10px">
+      想知道怎麼用「吃」來照顧毛孩體質？<br>
+      <span style="color:var(--primary);font-weight:500">五色蔬菜磚</span>——根據中獸醫食療邏輯設計的鮮食配方
+    </p>
+    <a href="#" onclick="alert('品牌頁面連結即將上線');return false" style="display:inline-block;font-size:13px;color:var(--primary);font-weight:500;text-decoration:none;padding:8px 20px;border:1px solid var(--primary);border-radius:24px;transition:all .2s">了解五色蔬菜磚 →</a>
+  </div>`;
+
+  html += `</div>`; // rp end
+
+  document.getElementById('result-page').innerHTML = html;
+
+  // Draw radar chart
+  setTimeout(() => drawRadar(sc), 100);
+}
+
+function drawRadar(sc) {
+  const ctx = document.getElementById('radar-chart');
+  if (!ctx) return;
+
+  new Chart(ctx, {
+    type: 'radar',
+    data: {
+      labels: [['活力','Vitality'], ['體態','Body'], ['代謝','Metabolism'], ['腹部','Abdomen']],
+      datasets: [{
+        data: [sc.energy, sc.bodyCondition, sc.metabolism, sc.accumulation],
+        backgroundColor: 'rgba(122,142,118,0.12)',
+        borderColor: 'rgba(122,142,118,0.6)',
+        borderWidth: 2,
+        pointBackgroundColor: [
+          'var(--ax-vitality)', 'var(--ax-body)', 'var(--ax-metabolism)', 'var(--ax-accum)'
+        ],
+        pointBorderColor: '#fff',
+        pointBorderWidth: 2,
+        pointRadius: 6,
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: true,
+      plugins: { legend: { display: false } },
+      scales: {
+        r: {
+          min: 0, max: 5,
+          ticks: { stepSize: 1, display: false },
+          grid: { color: 'rgba(0,0,0,0.06)' },
+          angleLines: { color: 'rgba(0,0,0,0.06)' },
+          pointLabels: {
+            font: { family: "'Noto Sans TC', sans-serif", size: 12, weight: '500' },
+            color: '#4A5F4A',
+          }
+        }
+      }
+    }
+  });
+}
+
+// ===== SHARE CARD =====
+function genShareCard() {
+  const wrap = document.getElementById('share-img-wrap');
+  const sp = petSp === 'cat' ? '🐱' : '🐶';
+  wrap.innerHTML = `
+    <div class="share-card" id="share-card-el">
+      <div class="sc-title">毛孩體質觀察報告</div>
+      <div class="sc-sub">Constitution Observation Report</div>
+      <div class="sc-divider"></div>
+      <div class="sc-name">${sp} ${petName}</div>
+      <div class="sc-pattern">${lastPattern || '體質觀察'}</div>
+      <div class="sc-desc">這份報告根據居家觀察產出，提供日常飲食與照護的參考方向。</div>
+      <div class="sc-divider"></div>
+      <div class="sc-footer">
+        <strong>想知道怎麼用「吃」來照顧毛孩體質？</strong><br>
+        五色蔬菜磚——根據中獸醫食療邏輯設計的鮮食配方 🐾
+      </div>
+    </div>
+  `;
+
+  document.getElementById('share-overlay').classList.remove('hidden');
+
+  // Convert to image
+  setTimeout(() => {
+    const el = document.getElementById('share-card-el');
+    html2canvas(el, {
+      backgroundColor: '#f9f7f3',
+      scale: 2,
+      useCORS: true,
+      logging: false
+    }).then(canvas => {
+      const img = canvas.toDataURL('image/png');
+      shareData = { img, pattern: lastPattern, name: petName };
+      wrap.innerHTML = `<img src="${img}" class="share-img" alt="${petName} 體質觀察結果">`;
+    }).catch(() => {});
+  }, 200);
+}
+
+function closeShare(e) {
+  if (e && e.target !== e.currentTarget) return;
+  document.getElementById('share-overlay').classList.add('hidden');
+}
+
+async function doNativeShare() {
+  if (shareData.img && navigator.share) {
+    try {
+      const resp = await fetch(shareData.img);
+      const blob = await resp.blob();
+      const file = new File([blob], `${shareData.name}_體質觀察.png`, { type: 'image/png' });
+      if (navigator.canShare && navigator.canShare({ files: [file] })) {
+        await navigator.share({
+          title: `${shareData.name} 的體質觀察結果`,
+          text: `${shareData.name} 的體質傾向是「${shareData.pattern}」！快來幫你家毛孩做觀察 🐾`,
+          files: [file]
+        });
+        return;
+      }
+    } catch (e) { if (e.name === 'AbortError') return; }
+    try {
+      await navigator.share({
+        title: `${shareData.name} 的體質觀察結果`,
+        text: `${shareData.name} 的體質傾向是「${shareData.pattern}」！快來幫你家毛孩做觀察 🐾`
+      });
+      return;
+    } catch (e) { if (e.name === 'AbortError') return; }
+  }
+  // Fallback: download
+  const isInApp = /Line|FBAN|FBAV|Instagram/i.test(navigator.userAgent || '');
+  if (!isInApp && shareData.img) {
+    try {
+      const a = document.createElement('a');
+      a.href = shareData.img;
+      a.download = `${petName}_體質觀察.png`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      return;
+    } catch (e) {}
+  }
+  alert('長按圖片即可儲存到手機相簿，再分享給朋友喔！');
+}
+</script>
+</body>
+</html>
